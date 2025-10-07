@@ -50,8 +50,15 @@ target-version = "py311"
 select = ["E", "F", "I", "UP", "B", "SIM", "PERF", "RUF", "ANN"]
 
 [tool.mypy]
-
-# see mypy.ini
+python_version = "3.11"
+strict = true
+warn_unused_configs = true
+warn_redundant_casts = true
+disallow_any_generics = true
+disallow_subclassing_any = true
+no_implicit_optional = true
+show_error_codes = true
+exclude = "(?x)(^third_party/|^packaging/)"
 
 [tool.pytest.ini_options]
 addopts = "-q --disable-warnings"
