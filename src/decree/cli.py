@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Annotated
 
 import typer
 
@@ -12,7 +13,9 @@ app = typer.Typer(add_completion=False, help="Decree: typed Python reimplementat
 
 @app.command()
 def init(
-    dir: Path | None = typer.Argument(None, help="Directory to initialize (defaults to ./doc/adr)"),
+    dir: Annotated[
+        Path | None, typer.Argument(help="Directory to initialize (defaults to ./doc/adr)")
+    ] = None,
 ) -> None:
     """Initialize ADR repository."""
     AdrLog.init(dir)
@@ -21,10 +24,12 @@ def init(
 
 @app.command()
 def new(
-    title: list[str] = typer.Argument(..., help="Title words of the ADR"),
-    status: AdrStatus = typer.Option(AdrStatus.Accepted, "--status", case_sensitive=False),
-    template: Path | None = typer.Option(None, "--template", help="Path to template"),
-    dir: Path | None = typer.Option(None, "--dir", help="ADR directory"),
+    title: Annotated[list[str], typer.Argument(help="Title words of the ADR")],
+    status: Annotated[
+        AdrStatus, typer.Option("--status", case_sensitive=False)
+    ] = AdrStatus.Accepted,
+    template: Annotated[Path | None, typer.Option("--template", help="Path to template")] = None,
+    dir: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
 ) -> None:
     """Create a new ADR."""
     rec = AdrLog(dir or Path("doc/adr")).new(" ".join(title), status=status, template=template)
@@ -33,11 +38,13 @@ def new(
 
 @app.command()
 def link(
-    src: int = typer.Argument(..., help="Source ADR number"),
-    rel: str = typer.Argument(..., help="Relationship label, e.g., Supersedes"),
-    tgt: int = typer.Argument(..., help="Target ADR number"),
-    reverse: bool = typer.Option(False, "--reverse/--no-reverse", help="Also add reverse link"),
-    dir: Path | None = typer.Option(None, "--dir", help="ADR directory"),
+    src: Annotated[int, typer.Argument(help="Source ADR number")],
+    rel: Annotated[str, typer.Argument(help="Relationship label, e.g., Supersedes")],
+    tgt: Annotated[int, typer.Argument(help="Target ADR number")],
+    reverse: Annotated[
+        bool, typer.Option("--reverse/--no-reverse", help="Also add reverse link")
+    ] = False,
+    dir: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
 ) -> None:
     """Add a relationship between ADRs."""
     AdrLog(dir or Path("doc/adr")).link(AdrRef(src), rel, AdrRef(tgt), reverse=reverse)
@@ -45,7 +52,9 @@ def link(
 
 
 @app.command("list")
-def list_cmd(dir: Path | None = typer.Option(None, "--dir", help="ADR directory")) -> None:
+def list_cmd(
+    dir: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
+) -> None:
     """List ADRs."""
     for r in AdrLog(dir or Path("doc/adr")).list():
         typer.echo(f"{r.number:04d} {r.date} {r.status.value} {r.title}")
@@ -53,8 +62,8 @@ def list_cmd(dir: Path | None = typer.Option(None, "--dir", help="ADR directory"
 
 @app.command("generate")
 def generate(
-    what: str = typer.Argument(..., help="What to generate: toc|graph"),
-    dir: Path | None = typer.Option(None, "--dir", help="ADR directory"),
+    what: Annotated[str, typer.Argument(help="What to generate: toc|graph")],
+    dir: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
 ) -> None:
     """Generate artifacts (toc; graph not implemented)."""
     log = AdrLog(dir or Path("doc/adr"))
@@ -70,7 +79,7 @@ def generate(
 
 @app.command("upgrade-repository")
 def upgrade_repository(
-    dir: Path | None = typer.Option(None, "--dir", help="ADR directory"),
+    dir: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
 ) -> None:
     """Validate repository (v1 no-op)."""
     AdrLog(dir or Path("doc/adr")).upgrade()

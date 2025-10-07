@@ -14,7 +14,7 @@ ADR_DIR_DEFAULT = Path("doc") / "adr"
 
 
 class AdrLog:
-    def __init__(self, dir: Path):
+    def __init__(self, dir: Path) -> None:
         self.dir = dir
 
     @classmethod
@@ -26,7 +26,7 @@ class AdrLog:
         log = cls(adr_dir)
         first = adr_dir / "0001-record-architecture-decisions.md"
         if not first.exists():
-            rec = log._write(number=1, title=SEED_0001_TITLE, status=AdrStatus.Accepted)
+            log._write(number=1, title=SEED_0001_TITLE, status=AdrStatus.Accepted)
         return log
 
     @beartype
@@ -128,9 +128,8 @@ def _read_meta(path: Path) -> dict[str, str]:
             meta["Date"] = line.split(":", 1)[1].strip()
         elif line.startswith("Status: "):
             meta["Status"] = line.split(":", 1)[1].strip()
-        if line.strip() == "":
-            if "Date" in meta and "Status" in meta:
-                break
+        if line.strip() == "" and "Date" in meta and "Status" in meta:
+            break
     return meta
 
 
