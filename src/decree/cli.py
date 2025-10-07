@@ -11,6 +11,23 @@ from .models import AdrRef, AdrStatus
 app = typer.Typer(add_completion=False, help="Decree: typed Python reimplementation of adr-tools")
 
 
+def _resolve_template_option(template: Path | None) -> Path | None:
+    if template is None:
+        return None
+    candidate = template.expanduser().resolve()
+    if not candidate.exists():
+        raise typer.BadParameter(f"Template file not found: {candidate}")
+    if not candidate.is_file():
+        raise typer.BadParameter(f"Template path is not a file: {candidate}")
+    try:
+        with candidate.open("r", encoding="utf-8"):
+            pass
+    except OSError as exc:
+        detail = exc.strerror or str(exc)
+        raise typer.BadParameter(f"Could not read template file {candidate}: {detail}") from exc
+    return candidate
+
+
 @app.command()
 def init(
     dir: Annotated[
@@ -28,11 +45,21 @@ def new(
     status: Annotated[
         AdrStatus, typer.Option("--status", case_sensitive=False)
     ] = AdrStatus.Accepted,
-    template: Annotated[Path | None, typer.Option("--template", help="Path to template")] = None,
+    template: Annotated[
+        Path | None,
+        typer.Option(
+            "--template",
+            help="Path to template (can also be set via ADR_TEMPLATE)",
+            envvar="ADR_TEMPLATE",
+        ),
+    ] = None,
     dir: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
 ) -> None:
     """Create a new ADR."""
-    rec = AdrLog(dir or Path("doc/adr")).new(" ".join(title), status=status, template=template)
+    template_path = _resolve_template_option(template)
+    rec = AdrLog(dir or Path("doc/adr")).new(
+        " ".join(title), status=status, template=template_path
+    )
     typer.echo(str(rec.path))
 
 
