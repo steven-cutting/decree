@@ -1,0 +1,8 @@
+Origin: steven-cutting
+Label: decree
+Suite: stable
+Codename: stable
+Architectures: amd64 all
+Components: main
+Description: Decree apt repository
+SignWith: yes
