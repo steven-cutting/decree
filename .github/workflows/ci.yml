@@ -34,7 +34,7 @@ jobs:
         run: pip install uv
       - name: Sync deps
         run: uv sync --all-extras --dev
-      - name: Run pre-commit hooks (same as `pre-commit run --all-files` locally)
+      - name: Run pre-commit hooks
         run: pre-commit run --all-files
 
   build-test:

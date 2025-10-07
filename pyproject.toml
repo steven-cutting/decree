@@ -49,6 +49,7 @@ target-version = "py311"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "PERF", "RUF", "ANN"]
+ignore = ["ANN101", "ANN102"]  # self and cls annotations are redundant
 
 [tool.mypy]
 python_version = "3.11"
@@ -64,3 +65,8 @@ exclude = "(?x)(^third_party/|^packaging/)"
 [tool.pytest.ini_options]
 addopts = "-q --disable-warnings"
 testpaths = ["tests"]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.3.0",
+]
