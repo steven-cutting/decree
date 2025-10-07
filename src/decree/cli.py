@@ -82,7 +82,7 @@ def main() -> None:
         app()
     except FileNotFoundError as e:
         typer.echo(str(e), err=True)
-        raise typer.Exit(code=66)
+        raise typer.Exit(code=66) from e
     except OSError as e:
         typer.echo(str(e), err=True)
-        raise typer.Exit(code=73)
+        raise typer.Exit(code=73) from e

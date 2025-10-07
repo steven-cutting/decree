@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import NoReturn
 from pathlib import Path
+from typing import NoReturn
 
 from beartype import beartype
 
