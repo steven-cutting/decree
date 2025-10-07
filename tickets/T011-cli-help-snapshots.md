@@ -3,28 +3,37 @@
 **user story & rationale**  
 As a maintainer, I want to catch accidental UX changes in help text.
 
-**scope (in)**  
-- Snapshot `decree --help`, `decree init --help`, `decree new --help`, `decree generate --help`.  
+**scope (in)**
+
+- Snapshot `decree --help`, `decree init --help`, `decree new --help`,
+  `decree generate --help`.
 - Normalize dynamic bits if any.
 
-**non-goals (out)**  
+**non-goals (out)**
+
 - Golden-testing entire runtime outputs beyond help.
 
-**acceptance criteria**  
+**acceptance criteria**
+
 - Tests fail on help text drift; maintainers update snapshots knowingly.
 
-**test notes**  
-- `tests/test_cli_help.py` with Typer `CliRunner`.  
+**test notes**
+
+- `tests/test_cli_help.py` with Typer `CliRunner`.
 - Store short golden strings or regex.
 
-**docs impact**  
+**docs impact**
+
 - None.
 
-**dependencies**  
+**dependencies**
+
 - None.
 
-**estimate**  
+**estimate**
+
 - S (0.5 day)
 
-**labels**  
+**labels**
+
 - area/cli, quality/tests, priority/p1

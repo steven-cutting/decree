@@ -3,26 +3,34 @@
 **user story & rationale**  
 As a maintainer, I want `upgrade-repository` to be safe to re-run.
 
-**scope (in)**  
+**scope (in)**
+
 - Test creates `.decree/upgrade.marker` once; second run is no-op.
 
-**non-goals (out)**  
+**non-goals (out)**
+
 - Implementing migrations.
 
-**acceptance criteria**  
+**acceptance criteria**
+
 - Two consecutive runs both exit 0; marker unchanged.
 
-**test notes**  
+**test notes**
+
 - `tests/test_upgrade_repository.py` using `tmp_path`.
 
-**docs impact**  
+**docs impact**
+
 - None.
 
-**dependencies**  
+**dependencies**
+
 - None.
 
-**estimate**  
+**estimate**
+
 - S (0.25 day)
 
-**labels**  
+**labels**
+
 - area/cli, quality/tests, priority/p1

@@ -3,28 +3,36 @@
 **user story & rationale**  
 As a macOS user, I want to install via Homebrew.
 
-**scope (in)**  
-- Create `steven-cutting/homebrew-decree`.  
-- Add `Formula/decree.rb` with sdist URL + SHA256 post-PyPI release.  
+**scope (in)**
+
+- Create `steven-cutting/homebrew-decree`.
+- Add `Formula/decree.rb` with sdist URL + SHA256 post-PyPI release.
 - CI check on macOS runner (`brew install steven-cutting/decree/decree`).
 
-**non-goals (out)**  
+**non-goals (out)**
+
 - Homebrew core submission.
 
-**acceptance criteria**  
+**acceptance criteria**
+
 - `brew install` succeeds on macOS CI; `decree --help` works.
 
-**test notes**  
+**test notes**
+
 - Simple GH Action in tap repo that installs from the formula.
 
-**docs impact**  
+**docs impact**
+
 - README: Homebrew install instructions.
 
-**dependencies**  
+**dependencies**
+
 - T005 (PyPI release live).
 
-**estimate**  
+**estimate**
+
 - M (1 day)
 
-**labels**  
+**labels**
+
 - area/dist, ci/release, priority/p0
