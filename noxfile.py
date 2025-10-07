@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import nox
 
-PY = ["3.11", "3.12"]
+PY = ["3.11", "3.12", "3.13"]
 
 
 @nox.session
