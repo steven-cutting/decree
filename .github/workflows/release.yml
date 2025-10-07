@@ -1,5 +1,6 @@
+---
 name: release
-on:
+'on':
   push:
     tags: ["v*.*.*"]
 permissions:
@@ -11,13 +12,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with: { fetch-depth: 0 }
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
-        with: { python-version: "3.12" }
+        with:
+          python-version: "3.12"
       - name: Install uv and tools
         run: pip install uv uv-build
       - name: Set version from tag
-        env: { GIT_TAG: "${{ github.ref_name }}" }
+        env:
+          GIT_TAG: "${{ github.ref_name }}"
         run: python scripts/set_version_from_tag.py
       - name: Build dist
         run: python -m uv_build sdist bdist_wheel

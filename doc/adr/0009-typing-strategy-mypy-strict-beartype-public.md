@@ -10,7 +10,8 @@ We value early error detection.
 
 ## Decision
 
-Enable mypy strict across the codebase and beartype runtime checks on public API only.
+Enable mypy strict across the codebase and beartype runtime checks on public
+API only.
 
 ## Consequences
 

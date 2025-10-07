@@ -10,7 +10,10 @@ We need multi-OS testing and automated releases.
 
 ## Decision
 
-Use a matrix on ubuntu/macos/windows for 3.11/3.12. Cache `uv`. Gates: ruff, mypy, pytest. Tag push triggers PyPI publish.
+Use a matrix on ubuntu/macos/windows for 3.11/3.12.
+Cache `uv`.
+Gates: ruff, mypy, pytest.
+Tag push triggers PyPI publish.
 
 ## Consequences
 

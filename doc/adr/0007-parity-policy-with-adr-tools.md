@@ -10,7 +10,9 @@ Users expect behavior similar to `adr-tools`.
 
 ## Decision
 
-Provide structurally identical behavior and outputs where feasible. Wording may differ. `generate graph` is not implemented in v1.
+Provide structurally identical behavior and outputs where feasible.
+Wording may differ.
+`generate graph` is not implemented in v1.
 
 ## Consequences
 

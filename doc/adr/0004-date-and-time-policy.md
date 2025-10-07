@@ -10,7 +10,8 @@ Teams need deterministic dates for reproducible outputs.
 
 ## Decision
 
-If `ADR_DATE` is set, use it verbatim. Otherwise, format `YYYY-MM-DD` using `DECREE_TZ` (default UTC).
+If `ADR_DATE` is set, use it verbatim.
+Otherwise, format `YYYY-MM-DD` using `DECREE_TZ` (default UTC).
 
 ## Consequences
 

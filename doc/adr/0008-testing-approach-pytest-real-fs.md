@@ -10,7 +10,8 @@ CLI tools are best tested against real files.
 
 ## Decision
 
-Use pytest with `tmp_path`, minimal mocking, and golden tests. Vendor small CC-BY snippets in `third_party/`.
+Use pytest with `tmp_path`, minimal mocking, and golden tests.
+Vendor small CC-BY snippets in `third_party/`.
 
 ## Consequences
 

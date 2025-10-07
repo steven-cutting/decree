@@ -10,7 +10,8 @@ We want our own wording while keeping structure.
 
 ## Decision
 
-Ship a simple default template with the standard sections. Allow overrides via `ADR_TEMPLATE` or `--template`.
+Ship a simple default template with the standard sections.
+Allow overrides via `ADR_TEMPLATE` or `--template`.
 
 ## Consequences
 

@@ -10,7 +10,8 @@ Parity tests may reuse small upstream text.
 
 ## Decision
 
-License our code BSD-3-Clause. Place CC-BY-4.0 snippets in `third_party/` and include a `NOTICE`.
+License our code BSD-3-Clause.
+Place CC-BY-4.0 snippets in `third_party/` and include a `NOTICE`.
 
 ## Consequences
 

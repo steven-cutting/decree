@@ -10,7 +10,9 @@ Users prefer native package managers.
 
 ## Decision
 
-Trusted publishing to PyPI on tags. Homebrew tap using `Language::Python::Virtualenv` installs from PyPI. Apt repo published via `reprepro` with a long-lived GPG key.
+Trusted publishing to PyPI on tags.
+Homebrew tap using `Language::Python::Virtualenv` installs from PyPI.
+Apt repo published via `reprepro` with a long-lived GPG key.
 
 ## Consequences
 

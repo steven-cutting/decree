@@ -1,24 +1,24 @@
+---
 repos:
-- repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.6.9
-  hooks:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
 
-  - id: ruff
-    args: [--fix]
-  - id: ruff-format
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.3.0
+    hooks:
+      - id: codespell
+        args: ["-L", "crate,upto,fo"]
 
-- repo: https://github.com/codespell-project/codespell
-  rev: v2.3.0
-  hooks:
-  - id: codespell
-    args: ["-L", "crate,upto,fo"]
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.18.1
+    hooks:
+      - id: markdownlint-cli2
 
-- repo: https://github.com/DavidAnson/markdownlint-cli2
-  rev: v0.18.1
-  hooks:
-  - id: markdownlint-cli2
-
-- repo: https://github.com/adrienverge/yamllint
-  rev: v1.35.1
-  hooks:
-  - id: yamllint
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.35.1
+    hooks:
+      - id: yamllint
