@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
+from typing import NoReturn
 from pathlib import Path
 
 from beartype import beartype
@@ -99,15 +100,16 @@ class AdrLog:
         slug = slugify(title)
         path = self.dir / f"{number:04d}-{slug}.md"
         tpl = template.read_text(encoding="utf-8") if template else DEFAULT_TEMPLATE
+        record_date = date or resolve_date()
         content = tpl.format(
             number=number,
             title=title,
             status=status.value,
-            date=(date or resolve_date()),
+            date=record_date,
         )
         path.write_text(content, encoding="utf-8", newline="\n")
         return AdrRecord(
-            number=number, slug=slug, title=title, status=status, date=resolve_date(), path=path
+            number=number, slug=slug, title=title, status=status, date=record_date, path=path
         )
 
 
@@ -143,5 +145,5 @@ def _reverse_rel(rel: str) -> str:
     return mapping.get(rel, f"{rel} (reverse)")
 
 
-def _raise(exc: Exception) -> None:
+def _raise(exc: Exception) -> NoReturn:
     raise exc
