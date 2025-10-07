@@ -1,0 +1,5 @@
+This project includes small verbatim snippets derived from npryce/adr-tools
+for testing and template parity. Those snippets are provided under CC-BY-4.0
+and are isolated under third_party/adr-tools-snippets with attribution.
+
+Our original source code is licensed under BSD-3-Clause.

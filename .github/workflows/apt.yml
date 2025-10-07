@@ -1,0 +1,37 @@
+---
+name: apt
+'on':
+  workflow_dispatch:
+  push:
+    tags: ["v*.*.*"]
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build-deb:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ruby ruby-dev rubygems build-essential rpm
+          sudo gem install --no-document fpm
+          pip install uv uv-build
+      - name: Build wheel
+        run: python -m uv_build bdist_wheel
+      - name: Build deb
+        run: bash packaging/apt/scripts/build_deb.sh
+      - name: Publish repo to gh-pages
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.APT_GPG_PRIVATE_KEY }}
+          GPG_KEY_PASSPHRASE: ${{ secrets.APT_GPG_PASSPHRASE }}
+        run: bash packaging/apt/scripts/publish_repo.sh
