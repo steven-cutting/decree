@@ -15,7 +15,7 @@ def slugify(title: str) -> str:
 
 def resolve_date(env: dict[str, str] | None = None) -> str:
     env = env or os.environ
-    if (d := env.get("ADR_DATE")):
+    if d := env.get("ADR_DATE"):
         return d
     tz = env.get("DECREE_TZ", "UTC")
     return datetime.now(ZoneInfo(tz)).strftime("%Y-%m-%d")

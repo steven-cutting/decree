@@ -1,13 +1,13 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
 
 from beartype import beartype
 
-from .models import AdrRecord, AdrStatus, AdrRef, LinkSpec
+from .models import AdrRecord, AdrRef, AdrStatus
 from .templates import DEFAULT_TEMPLATE, SEED_0001_TITLE
-from .utils import slugify, resolve_date
+from .utils import resolve_date, slugify
 
 ADR_DIR_DEFAULT = Path("doc") / "adr"
 
@@ -18,7 +18,7 @@ class AdrLog:
 
     @classmethod
     @beartype
-    def init(cls, dir: Path | None = None) -> "AdrLog":
+    def init(cls, dir: Path | None = None) -> AdrLog:
         base = Path.cwd()
         adr_dir = (dir or (base / ADR_DIR_DEFAULT)).resolve()
         adr_dir.mkdir(parents=True, exist_ok=True)
@@ -68,7 +68,9 @@ class AdrLog:
         lines = ["# Architecture decision records", ""]
         for rec in self.list():
             rel = rec.path.relative_to(self.dir)
-            lines.append(f"- {rec.number:04d}. [{rec.title}]({rel.as_posix()}) — {rec.status} ({rec.date})")
+            lines.append(
+                f"- {rec.number:04d}. [{rec.title}]({rel.as_posix()}) — {rec.status} ({rec.date})"
+            )
         return "\n".join(lines) + "\n"
 
     @beartype
@@ -104,7 +106,9 @@ class AdrLog:
             date=(date or resolve_date()),
         )
         path.write_text(content, encoding="utf-8", newline="\n")
-        return AdrRecord(number=number, slug=slug, title=title, status=status, date=resolve_date(), path=path)
+        return AdrRecord(
+            number=number, slug=slug, title=title, status=status, date=resolve_date(), path=path
+        )
 
 
 def _read_title(path: Path) -> str:

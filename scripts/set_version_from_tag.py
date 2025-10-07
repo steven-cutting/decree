@@ -5,14 +5,20 @@ import pathlib
 import re
 import subprocess
 
-
 root = pathlib.Path(__file__).resolve().parents[1]
-tag = os.getenv("GIT_TAG") or subprocess.check_output([
-    "git",
-    "describe",
-    "--tags",
-    "--abbrev=0",
-]).decode().strip()
+tag = (
+    os.getenv("GIT_TAG")
+    or subprocess.check_output(
+        [
+            "git",
+            "describe",
+            "--tags",
+            "--abbrev=0",
+        ]
+    )
+    .decode()
+    .strip()
+)
 m = re.fullmatch(r"v(\d+\.\d+\.\d+)", tag)
 if not m:
     raise SystemExit("Tag must look like vX.Y.Z")
