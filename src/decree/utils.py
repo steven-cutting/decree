@@ -3,9 +3,8 @@ from __future__ import annotations
 import os
 import re
 import unicodedata
-from collections.abc import Mapping
-from datetime import datetime
-from zoneinfo import ZoneInfo
+from collections.abc import Callable, Mapping
+from datetime import date
 
 
 def slugify(title: str) -> str:
@@ -14,9 +13,24 @@ def slugify(title: str) -> str:
     return s.strip("-")
 
 
-def resolve_date(env: Mapping[str, str] | None = None) -> str:
+_DATE_PATTERN = re.compile(r"\d{4}-\d{2}-\d{2}")
+
+
+def _validate_date(value: str) -> str:
+    if not _DATE_PATTERN.fullmatch(value):
+        raise ValueError(f"Invalid date format: {value}")
+    return value
+
+
+def resolve_date(
+    *,
+    cli_date: str | None = None,
+    env: Mapping[str, str] | None = None,
+    today: Callable[[], date] | None = None,
+) -> str:
     actual_env: Mapping[str, str] = os.environ if env is None else env
-    if d := actual_env.get("ADR_DATE"):
-        return d
-    tz = actual_env.get("DECREE_TZ", "UTC")
-    return datetime.now(ZoneInfo(tz)).strftime("%Y-%m-%d")
+    value = cli_date or actual_env.get("ADR_DATE")
+    if value is None:
+        today_fn = today or date.today
+        value = today_fn().isoformat()
+    return _validate_date(value)
