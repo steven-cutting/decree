@@ -100,7 +100,7 @@ class AdrLog:
         slug = slugify(title)
         path = self.dir / f"{number:04d}-{slug}.md"
         tpl = template.read_text(encoding="utf-8") if template else DEFAULT_TEMPLATE
-        record_date = date or resolve_date()
+        record_date = resolve_date(cli_date=date)
         content = tpl.format(
             number=number,
             title=title,
