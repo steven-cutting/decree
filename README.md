@@ -35,6 +35,14 @@ decree generate graph  # exits non-zero, not implemented
 * `DECREE_TZ`: IANA timezone for date formatting (default: `UTC`)
 * `ADR_TEMPLATE`: path to a custom template file
 
+Template precedence is explicit CLI flag first, then the environment variable, then the
+built-in default:
+
+```bash
+ADR_TEMPLATE=/path/to/template.md decree new "Use beartype"
+decree new --template /other/path.md "Use beartype"  # CLI overrides env var
+```
+
 ## license
 
 BSD-3-Clause for our code. CC-BY-4.0 notices for any third-party snippets.

@@ -28,12 +28,54 @@ def new(
     status: Annotated[
         AdrStatus, typer.Option("--status", case_sensitive=False)
     ] = AdrStatus.Accepted,
-    template: Annotated[Path | None, typer.Option("--template", help="Path to template")] = None,
+    template: Annotated[
+        Path | None,
+        typer.Option(
+            "--template",
+            envvar="ADR_TEMPLATE",
+            help="Path to template (can also be set via ADR_TEMPLATE)",
+        ),
+    ] = None,
     dir: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
 ) -> None:
     """Create a new ADR."""
-    rec = AdrLog(dir or Path("doc/adr")).new(" ".join(title), status=status, template=template)
+    template_path = _resolve_template_path(template)
+    rec = AdrLog(dir or Path("doc/adr")).new(" ".join(title), status=status, template=template_path)
     typer.echo(str(rec.path))
+
+
+def _resolve_template_path(template: Path | None) -> Path | None:
+    if template is None:
+        return None
+
+    expanded = Path(template).expanduser()
+    try:
+        candidate = expanded.resolve()
+    except OSError as exc:  # pragma: no cover - resolution errors are rare but handled
+        typer.echo(f"Could not resolve template path {expanded}: {exc}", err=True)
+        raise typer.Exit(code=73) from exc
+
+    try:
+        exists = candidate.exists()
+    except OSError as exc:
+        typer.echo(f"Could not access template path {candidate}: {exc}", err=True)
+        raise typer.Exit(code=73) from exc
+
+    if not exists:
+        typer.echo(f"Template not found: {candidate}", err=True)
+        raise typer.Exit(code=66)
+    if not candidate.is_file():
+        typer.echo(f"Template path is not a file: {candidate}", err=True)
+        raise typer.Exit(code=66)
+
+    try:
+        with candidate.open("r", encoding="utf-8"):
+            pass
+    except OSError as exc:
+        typer.echo(f"Could not read template at {candidate}: {exc}", err=True)
+        raise typer.Exit(code=73) from exc
+
+    return candidate
 
 
 @app.command()
