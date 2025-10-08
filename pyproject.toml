@@ -34,6 +34,7 @@ dev = [
 "mypy>=1.11",
 "types-setuptools",
 "types-python-dateutil",
+"pymarkdownlnt>=0.9.32",
 ]
 
 [project.scripts]

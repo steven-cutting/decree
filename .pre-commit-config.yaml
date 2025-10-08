@@ -22,10 +22,12 @@ repos:
       - id: codespell
         args: ["-L", "crate,upto,fo"]
 
-  - repo: https://github.com/DavidAnson/markdownlint-cli2
-    rev: v0.18.1
+  - repo: https://github.com/jackdewinter/pymarkdown
+    rev: v0.9.32
     hooks:
-      - id: markdownlint-cli2
+      - id: pymarkdown
+        name: markdown lint (pymarkdown)
+        args: ["--config", ".pymarkdown.toml", "scan"]
 
   - repo: https://github.com/adrienverge/yamllint
     rev: v1.35.1
