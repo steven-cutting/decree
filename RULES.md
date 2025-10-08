@@ -1,16 +1,19 @@
 # Markdown lint rules
 
-This project migrated from `markdownlint-cli2` to [PyMarkdown](https://github.com/jackdewinter/pymarkdown)
-to remove the Node toolchain requirement while keeping comparable coverage.
+This project migrated from `markdownlint-cli2` to
+[PyMarkdown](https://github.com/jackdewinter/pymarkdown).
+The goal was to remove the Node toolchain requirement while keeping
+comparable coverage.
 
 ## Baseline mapping
 
-| Concern | markdownlint-cli2 | PyMarkdown | Notes |
-| --- | --- | --- | --- |
-| Runner | `markdownlint-cli2` (Node) | `pymarkdown` (Python) | Executed through pre-commit and the Makefile helper. |
-| Line length | Default rule (`MD013`) relied on defaults | `md013` line length raised to 100, skip code blocks | Aligns with project Ruff line length of 100 and avoids noisy code snippets. |
-| Multiple blank lines | `MD012` disabled | `md012` disabled | Keeps existing layout flexibility for long ADRs. |
-| Emphasis as heading | `MD036` disabled | `md036` disabled | Allows intentional use of emphasis in historical ADR imports. |
+- **Runner**: `markdownlint-cli2` (Node) has been replaced by `pymarkdown` (Python). We execute it via
+  pre-commit and the Makefile helpers.
+- **Line length**: markdownlint's default `MD013` became `md013` with a 100-character limit that skips
+  fenced code. The value matches the Ruff configuration.
+- **Multiple blank lines**: `MD012` remains disabled as `md012` so longer ADR sections stay intact.
+- **Emphasis as heading**: `MD036` stays disabled as `md036` to allow emphasis inherited from
+  legacy ADRs.
 
 ## Disabled or tuned rules
 
