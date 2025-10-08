@@ -7,6 +7,6 @@ import pytest
 
 @pytest.fixture(autouse=True)
 def _clean_env(monkeypatch: pytest.MonkeyPatch) -> Iterator[None]:
-    for k in ("ADR_DATE", "DECREE_TZ", "ADR_TEMPLATE"):
+    for k in ("ADR_DATE", "ADR_TEMPLATE"):
         monkeypatch.delenv(k, raising=False)
     yield
