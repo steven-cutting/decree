@@ -35,9 +35,7 @@ def test_env_template_used_when_option_missing(
     assert "__ENV_SENTINEL__" in adr_path.read_text(encoding="utf-8")
 
 
-def test_cli_template_overrides_env(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_cli_template_overrides_env(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     repo_dir = _init_repo(tmp_path, monkeypatch)
     env_template = tmp_path / "env_template.md"
     env_template.write_text(
@@ -75,9 +73,7 @@ def test_default_template_used_without_env_or_cli(
     assert "__SHOULD_NOT_APPEAR__" not in content
 
 
-def test_invalid_env_template_path_fails(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_invalid_env_template_path_fails(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     _init_repo(tmp_path, monkeypatch)
     missing = tmp_path / "missing_template.md"
     monkeypatch.setenv("ADR_TEMPLATE", str(missing))
@@ -86,5 +82,3 @@ def test_invalid_env_template_path_fails(
 
     assert result.exit_code != 0
     assert str(missing) in result.output
-
-
