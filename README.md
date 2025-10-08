@@ -49,7 +49,3 @@ current local date is used. Supply `--date YYYY-MM-DD` or set the `ADR_DATE`
 environment variable to override the value (the CLI flag takes precedence). Any
 override must already be in ISO format; otherwise, the command exits with an
 error.
-
-## license
-
-BSD-3-Clause for our code. CC-BY-4.0 notices for any third-party snippets.
