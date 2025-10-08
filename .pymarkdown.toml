@@ -1,0 +1,14 @@
+# PyMarkdown configuration aligning with our former markdownlint defaults.
+
+[plugins.md013]
+line_length = 100
+code_block_line_length = 120
+heading_line_length = 100
+code_blocks = false
+headings = true
+
+[plugins.md012]
+enabled = false
+
+[plugins.md036]
+enabled = false

@@ -1,6 +1,0 @@
-config:
-  MD036: false  # Disable "Emphasis used instead of a heading"
-  MD012: false  # Disable "Multiple consecutive blank lines"
-
-globs:
-  - "**/*.md"
