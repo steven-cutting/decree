@@ -12,6 +12,70 @@ from .utils import resolve_date, slugify
 
 ADR_DIR_DEFAULT = Path("doc") / "adr"
 
+# Base relationships adapted from npryce/adr-tools for parity with its linking
+# behavior.  We expand the mapping so either side of the relationship can be
+# used as a key.  See https://github.com/npryce/adr-tools for reference.
+_BASE_RELATIONS: dict[str, str] = {
+    "Supersedes": "Is superseded by",
+    "Amends": "Is amended by",
+    "References": "Is referenced by",
+}
+REVERSE_MAP: dict[str, str] = {
+    **_BASE_RELATIONS,
+    **{v: k for k, v in _BASE_RELATIONS.items()},
+    "Relates to": "Relates to",
+}
+
+
+def _resolve_reverse_relation(rel: str) -> str:
+    return REVERSE_MAP.get(rel, f"Is {rel.lower()} by")
+
+
+def link_adr(src: Path, rel: str, tgt: Path, *, reverse: bool = True) -> None:
+    """Link two ADR markdown files mirroring npryce/adr-tools semantics."""
+
+    def _link_single(file: Path, relation: str, target: Path) -> None:
+        target_num = target.name.split("-", 1)[0]
+        line = f"{relation}: {target_num}"
+        existing = file.read_text(encoding="utf-8").splitlines()
+        if line in existing:
+            return
+        with file.open("a", encoding="utf-8", newline="\n") as handle:
+            handle.write(f"\n{line}\n")
+
+    _link_single(src, rel, tgt)
+
+    if reverse:
+        _link_single(tgt, _resolve_reverse_relation(rel), src)
+
+
+def unlink_adr(src: Path, rel: str, tgt: Path, *, reverse: bool = True) -> None:
+    """Remove ADR links keeping parity with npryce/adr-tools behavior."""
+
+    def _unlink_single(file: Path, relation: str, target: Path) -> None:
+        target_num = target.name.split("-", 1)[0]
+        line = f"{relation}: {target_num}"
+        text = file.read_text(encoding="utf-8")
+        lines = text.splitlines()
+        for idx, value in enumerate(lines):
+            if value == line:
+                del lines[idx]
+                if idx > 0 and lines[idx - 1] == "":
+                    del lines[idx - 1]
+                break
+        else:
+            return
+
+        new_text = "\n".join(lines)
+        if text.endswith("\n"):
+            new_text += "\n"
+        file.write_text(new_text, encoding="utf-8")
+
+    _unlink_single(src, rel, tgt)
+
+    if reverse:
+        _unlink_single(tgt, _resolve_reverse_relation(rel), src)
+
 
 class AdrLog:
     def __init__(self, dir: Path) -> None:
@@ -60,9 +124,13 @@ class AdrLog:
     def link(self, src: AdrRef, rel: str, tgt: AdrRef, *, reverse: bool = False) -> None:
         s = self._path_for(src.number)
         t = self._path_for(tgt.number)
-        _append_link_line(s, rel, t)
-        if reverse:
-            _append_link_line(t, _reverse_rel(rel), s)
+        link_adr(s, rel, t, reverse=reverse)
+
+    @beartype
+    def unlink(self, src: AdrRef, rel: str, tgt: AdrRef, *, reverse: bool = False) -> None:
+        s = self._path_for(src.number)
+        t = self._path_for(tgt.number)
+        unlink_adr(s, rel, t, reverse=reverse)
 
     @beartype
     def generate_toc(self) -> str:
@@ -131,17 +199,6 @@ def _read_meta(path: Path) -> dict[str, str]:
         if line.strip() == "" and "Date" in meta and "Status" in meta:
             break
     return meta
-
-
-def _append_link_line(file: Path, rel: str, target: Path) -> None:
-    target_num = target.name.split("-", 1)[0]
-    with file.open("a", encoding="utf-8", newline="\n") as fh:
-        fh.write(f"\n{rel}: {target_num}\n")
-
-
-def _reverse_rel(rel: str) -> str:
-    mapping = {"Supersedes": "Superseded by", "Amends": "Amended by"}
-    return mapping.get(rel, f"{rel} (reverse)")
 
 
 def _raise(exc: Exception) -> NoReturn:
