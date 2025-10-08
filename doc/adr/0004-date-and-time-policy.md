@@ -10,8 +10,9 @@ Teams need deterministic dates for reproducible outputs.
 
 ## Decision
 
-If `ADR_DATE` is set, use it verbatim.
-Otherwise, format `YYYY-MM-DD` using `DECREE_TZ` (default UTC).
+If the CLI flag `--date` is provided, use its value verbatim.
+Else if `ADR_DATE` is set, use it verbatim.
+Otherwise, format `YYYY-MM-DD` using the local date from `datetime.date.today()`.
 
 ## Consequences
 
@@ -20,4 +21,4 @@ Otherwise, format `YYYY-MM-DD` using `DECREE_TZ` (default UTC).
 
 ## Alternatives considered
 
-* Always use local time.
+* Always use local time without overrides.

@@ -7,8 +7,21 @@ import typer
 
 from .core import AdrLog
 from .models import AdrRef, AdrStatus
+from .utils import resolve_date
 
 app = typer.Typer(add_completion=False, help="Decree: typed Python reimplementation of adr-tools")
+
+
+def _validate_date_option(
+    ctx: typer.Context, param: typer.CallbackParam, value: str | None
+) -> str | None:
+    if value is None:
+        return None
+    try:
+        resolve_date(cli_date=value, env={})
+    except ValueError as exc:
+        raise typer.BadParameter(str(exc), ctx=ctx, param=param) from exc
+    return value
 
 
 @app.command()
@@ -30,9 +43,23 @@ def new(
     ] = AdrStatus.Accepted,
     template: Annotated[Path | None, typer.Option("--template", help="Path to template")] = None,
     dir: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
+    date: Annotated[
+        str | None,
+        typer.Option(
+            "--date",
+            help="Set ADR date (YYYY-MM-DD). Overrides ADR_DATE environment variable.",
+            callback=_validate_date_option,
+        ),
+    ] = None,
 ) -> None:
     """Create a new ADR."""
-    rec = AdrLog(dir or Path("doc/adr")).new(" ".join(title), status=status, template=template)
+    try:
+        rec = AdrLog(dir or Path("doc/adr")).new(
+            " ".join(title), status=status, template=template, date=date
+        )
+    except ValueError as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(code=2) from exc
     typer.echo(str(rec.path))
 
 
