@@ -34,6 +34,14 @@ decree generate graph  # exits non-zero, not implemented
 * `ADR_DATE`: if set, used verbatim as the ADR date after validation
 * `ADR_TEMPLATE`: path to a custom template file
 
+Template precedence is explicit CLI flag first, then the environment variable, then the
+built-in default:
+
+```bash
+ADR_TEMPLATE=/path/to/template.md decree new "Use beartype"
+decree new --template /other/path.md "Use beartype"  # CLI overrides env var
+```
+
 ### Date handling and reproducibility
 
 New ADRs always render `Date: YYYY-MM-DD` in their front matter. By default, the
