@@ -47,3 +47,21 @@ def test_unlink_with_reverse_removes_relationships(tmp_path: Path) -> None:
     assert "Is referenced by:" not in tgt_text
     assert src_text.endswith("\n")
     assert tgt_text.endswith("\n")
+
+
+def test_link_then_unlink_restores_original_content(tmp_path: Path) -> None:
+    log = AdrLog.init(tmp_path / "doc" / "adr")
+    src_record = log.new("Preserve file content when unlinking")
+    tgt_record = log.new("Ensure unlink only removes targeted relation")
+
+    src_ref = AdrRef(src_record.number)
+    tgt_ref = AdrRef(tgt_record.number)
+
+    original_src = src_record.path.read_text(encoding="utf-8")
+    original_tgt = tgt_record.path.read_text(encoding="utf-8")
+
+    log.link(src_ref, "Relates to", tgt_ref, reverse=True)
+    log.unlink(src_ref, "Relates to", tgt_ref, reverse=True)
+
+    assert src_record.path.read_text(encoding="utf-8") == original_src
+    assert tgt_record.path.read_text(encoding="utf-8") == original_tgt
