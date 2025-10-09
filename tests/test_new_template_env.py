@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from secrets import token_urlsafe
 
 import pytest
 from typer.testing import CliRunner
@@ -75,7 +76,7 @@ def test_default_template_used_without_env_or_cli(
 
 def test_invalid_env_template_path_fails(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     _init_repo(tmp_path, monkeypatch)
-    missing = tmp_path / "missing_template.md"
+    missing = Path("/nope") / token_urlsafe(4) / "missing_template.md"
     monkeypatch.setenv("ADR_TEMPLATE", str(missing))
 
     result = runner.invoke(app, ["new", "Broken"])

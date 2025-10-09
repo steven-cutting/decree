@@ -55,5 +55,5 @@ jobs:
         run: pip install uv
       - name: Sync deps
         run: uv sync --all-extras --dev
-      - name: Tests
-        run: uv run pytest -q
+      - name: Tests and coverage
+        run: uv run pytest --cov=decree --cov-report=term-missing

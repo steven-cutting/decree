@@ -1,0 +1,17 @@
+{
+  "plugins": {
+    "md013": {
+      "line_length": 100,
+      "code_block_line_length": 120,
+      "heading_line_length": 100,
+      "code_blocks": false,
+      "headings": true
+    },
+    "md012": {
+      "enabled": false
+    },
+    "md036": {
+      "enabled": false
+    }
+  }
+}

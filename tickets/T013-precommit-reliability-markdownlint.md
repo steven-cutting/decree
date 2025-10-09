@@ -84,27 +84,15 @@ commented Makefile target records how we could trial a Rust option later.
 ```yaml
 # .pre-commit-config.yaml
   - repo: https://github.com/jackdewinter/pymarkdown
-    rev: v0.9.32
+    rev: v0.9.17
     hooks:
       - id: pymarkdown
-        name: markdown lint (pymarkdown)
-        args: ["--config", ".pymarkdown.toml", "scan"]
+        args: ["scan", "."]
 ```
 
 ```toml
-# .pymarkdown.toml
-[plugins.md013]
-line_length = 100
-code_block_line_length = 120
-heading_line_length = 100
-code_blocks = false
-headings = true
-
-[plugins.md012]
-enabled = false
-
-[plugins.md036]
-enabled = false
+# .pymarkdown.json
+{}
 ```
 
 ```make
@@ -112,10 +100,10 @@ enabled = false
 .PHONY: md-lint md-fix
 
 md-lint:
-uv run pymarkdown --config .pymarkdown.toml scan .
+uv run pymarkdown scan .
 
 md-fix:
-uv run pymarkdown --config .pymarkdown.toml fix .
+uv run pymarkdown fix .
 
 # Optional future experiment:
 # md-lint-rust:
