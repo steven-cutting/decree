@@ -11,8 +11,8 @@ checks continued to run smoothly.
 
 ## Decision
 
-Replace the markdownlint hook with PyMarkdown pinned at `v0.9.32`, share a
-project-wide `.pymarkdown.toml`, and document `make md-lint`/`make md-fix`
+Replace the markdownlint hook with PyMarkdown pinned at `v0.9.17`, share a
+project-wide `.pymarkdown.json`, and document `make md-lint`/`make md-fix`
 helpers that invoke the Python CLI through `uv`.
 
 ## Consequences

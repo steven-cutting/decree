@@ -1,10 +1,10 @@
 .PHONY: md-lint md-fix
 
 md-lint:
-	uv run pymarkdown --config .pymarkdown.toml scan .
+uv run pymarkdown scan .
 
 md-fix:
-	uv run pymarkdown --config .pymarkdown.toml fix .
+uv run pymarkdown fix .
 
 # Optional future experiment:
 # md-lint-rust:

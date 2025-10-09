@@ -29,6 +29,35 @@ decree generate graph  # exits non-zero, not implemented
 * `decree generate graph` (not implemented)
 * `decree upgrade-repository`
 
+## exit codes
+
+Decree follows [sysexits](https://man.freebsd.org/cgi/man.cgi?query=sysexits&sektion=3) where
+available and falls back to portable numbers on platforms such as Windows. The
+fallback values are listed below; on POSIX you will see the native `os.EX_*`
+numbers (for example, usage errors exit with 64).
+
+| Fallback | ExitCode member | Meaning |
+| -------- | --------------- | ------- |
+| 0 | `ExitCode.SUCCESS` | Successful run. |
+| 1 | `ExitCode.GENERAL_ERROR` | Unexpected runtime failure or abort. |
+| 2 | `ExitCode.USAGE_ERROR` | CLI usage error (missing/bad arguments). |
+| 66 | `ExitCode.INPUT_MISSING` | Required input was missing or unreadable. |
+| 69 | `ExitCode.UNAVAILABLE` | Service or dependency unavailable. |
+| 78 | `ExitCode.CONFIG_ERROR` | Configuration or environment problem. |
+
+Examples:
+
+```bash
+decree new "Valid ADR"              # -> 0
+decree new --template missing.md foo # -> 66 (missing template)
+ADR_DATE=bad-date decree new Foo     # -> 78 (invalid config)
+```
+
+Contributors should raise `click.UsageError` for argument problems and
+`click.ClickException` with `ExitCode` for domain failures. See the
+[Click exception guide](https://click.palletsprojects.com/en/stable/exceptions/)
+for details.
+
 ## configuration
 
 * `ADR_DATE`: if set, used verbatim as the ADR date after validation

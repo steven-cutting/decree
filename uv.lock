@@ -224,7 +224,7 @@ requires-dist = [
     { name = "coverage", marker = "extra == 'dev'", specifier = ">=7.6" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11" },
     { name = "nox", marker = "extra == 'dev'", specifier = ">=2024.4.15" },
-    { name = "pymarkdownlnt", marker = "extra == 'dev'", specifier = ">=0.9.32" },
+    { name = "pymarkdownlnt", marker = "extra == 'dev'", specifier = ">=0.9.17" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.2" },
     { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=5.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.6.9" },

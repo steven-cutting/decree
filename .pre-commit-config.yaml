@@ -23,11 +23,10 @@ repos:
         args: ["-L", "crate,upto,fo"]
 
   - repo: https://github.com/jackdewinter/pymarkdown
-    rev: v0.9.32
+    rev: v0.9.17
     hooks:
       - id: pymarkdown
-        name: markdown lint (pymarkdown)
-        args: ["--config", ".pymarkdown.toml", "scan"]
+        args: ["--config", ".pymarkdown.json", "scan", "."]
 
   - repo: https://github.com/adrienverge/yamllint
     rev: v1.35.1

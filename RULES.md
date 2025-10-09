@@ -5,6 +5,9 @@ This project migrated from `markdownlint-cli2` to
 The goal was to remove the Node toolchain requirement while keeping
 comparable coverage.
 
+> **Note:** `.pymarkdown.json` is currently a minimal placeholder while we
+> rebuild the tuned rule set.
+
 ## Baseline mapping
 
 - **Runner**: `markdownlint-cli2` (Node) has been replaced by `pymarkdown` (Python). We execute it via
@@ -23,9 +26,9 @@ comparable coverage.
 
 ## Usage
 
-- `make md-lint` runs `pymarkdown --config .pymarkdown.toml scan .` via `uv`.
+- `make md-lint` runs `pymarkdown scan .` via `uv`.
 - `make md-fix` runs the automated fixer.
-- The pre-commit hook is pinned to `pymarkdown` `v0.9.32` and uses the same configuration file.
+- The pre-commit hook is pinned to `pymarkdown` `v0.9.17` and auto-discovers `.pymarkdown.json`.
 
 ## Optional experiments
 

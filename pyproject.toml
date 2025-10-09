@@ -34,7 +34,7 @@ dev = [
 "mypy>=1.11",
 "types-setuptools",
 "types-python-dateutil",
-"pymarkdownlnt>=0.9.32",
+"pymarkdownlnt>=0.9.17",
 ]
 
 [project.scripts]
@@ -66,6 +66,14 @@ exclude = "(?x)(^third_party/|^packaging/)"
 [tool.pytest.ini_options]
 addopts = "-q --disable-warnings"
 testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["decree"]
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
 
 [dependency-groups]
 dev = [
