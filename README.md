@@ -71,6 +71,12 @@ ADR_TEMPLATE=/path/to/template.md decree new "Use beartype"
 decree new --template /other/path.md "Use beartype"  # CLI overrides env var
 ```
 
+## dependabot
+
+Dependabot checks uv dependencies and GitHub Actions every Monday at 09:00 America/Los_Angeles.
+Edit `.github/dependabot.yml` to change the schedule window,
+and adjust the `groups` block if you want different buckets for runtime versus dev tooling updates.
+
 ### Date handling and reproducibility
 
 New ADRs always render `Date: YYYY-MM-DD` in their front matter. By default, the
