@@ -19,10 +19,8 @@ jobs:
           python-version: "3.12"
       - name: Install uv and tools
         run: pip install uv uv-build
-      - name: Set version from tag
-        env:
-          GIT_TAG: "${{ github.ref_name }}"
-        run: python scripts/set_version_from_tag.py
+      - name: Verify tag matches project version
+        run: python scripts/verify_tag_matches_version.py "${{ github.ref_name }}"
       - name: Build dist
         run: python -m uv_build sdist bdist_wheel
       - name: Publish to PyPI (trusted publishing)
