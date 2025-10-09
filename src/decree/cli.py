@@ -182,10 +182,15 @@ def main() -> None:
 
 
 class DecreeClickException(click.ClickException):
+    """
+    An exception class for Decree CLI errors that allows specifying a custom exit code.
+
+    This class extends `click.ClickException` by adding an `exit_code` attribute,
+    which is used to control the exit status of the CLI when the exception is raised.
+    The `exit_code` should be an integer representing the desired process exit code.
+    """
     def __init__(self, message: str, exit_code: int) -> None:
         super().__init__(message)
         self.exit_code = exit_code
-
-
 def _click_exception(message: str, code: ExitCode) -> click.ClickException:
     return DecreeClickException(message, int(code))
