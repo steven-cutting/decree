@@ -182,9 +182,10 @@ def main() -> None:
 
 
 class DecreeClickException(click.ClickException):
-    def __init__(self, message: str, exit_code: int):
+    def __init__(self, message: str, exit_code: int) -> None:
         super().__init__(message)
         self.exit_code = exit_code
+
 
 def _click_exception(message: str, code: ExitCode) -> click.ClickException:
     return DecreeClickException(message, int(code))
