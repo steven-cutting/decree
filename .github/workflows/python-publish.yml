@@ -49,10 +49,11 @@ jobs:
       # The PyPI project URL for 'decree' is configured below:
       # URL in the deployment status:
       url: https://pypi.org/p/decree
-      # ALTERNATIVE: 
+      # ALTERNATIVE:
       # If your GitHub Release name is the PyPI project version string,
       # uncomment the following line instead:
-      # url: https://pypi.org/project/YOURPROJECT/${{ github.event.release.name }}
+      # url: https://pypi.org/project/YOURPROJECT/
+      # ${{ github.event.release.name }}
 
     steps:
       - name: Retrieve release distributions
