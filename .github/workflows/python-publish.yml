@@ -58,9 +58,7 @@ jobs:
       # URL in the deployment status:
       url: https://pypi.org/p/decree
       #
-      # ALTERNATIVE: if your GitHub Release name is the PyPI project 
-      # version string
-      # ALTERNATIVE: exactly, uncomment the following line instead:
+      # ALTERNATIVE: If your GitHub Release name is the PyPI project version string, uncomment the following line instead:
       # url: https://pypi.org/project/YOURPROJECT/${{ github.event.release.name }}
 
     steps:
