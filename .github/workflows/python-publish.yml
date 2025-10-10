@@ -57,7 +57,7 @@ jobs:
     # recommended.
     environment:
       name: pypi
-      # OPTIONAL: uncomment and update to include your PyPI project 
+      # The PyPI project URL for 'decree' is configured below:
       # URL in the deployment status:
       url: https://pypi.org/p/decree
       #
