@@ -96,6 +96,19 @@ def test_title_set_dry_run_leaves_files_unchanged(adr_dir: Path) -> None:
     assert "# 0005: Original" in source.read_text(encoding="utf-8")
 
 
+def test_title_set_rejects_paths_outside_directory(adr_dir: Path) -> None:
+    external = Path("outside.md")
+    external.write_text("# Heading\n", encoding="utf-8")
+
+    result = runner.invoke(
+        app,
+        ["title", "set", str(external.resolve()), "New", "Title"],
+    )
+
+    assert result.exit_code != 0
+    assert "outside the ADR directory" in result.stderr
+
+
 def test_title_sync_updates_madr_links(adr_dir: Path) -> None:
     madr = adr_dir / "0007-old-madr.md"
     madr.write_text(

@@ -131,15 +131,15 @@ def _resolve_target(adr_dir: Path, target: str) -> Path:
     candidate = Path(target)
     search_paths: Iterable[Path]
 
-    if candidate.is_absolute() and candidate.exists():
-        path = candidate
-    else:
-        path = (adr_dir / candidate).resolve()
+    base = adr_dir.resolve()
+    path = candidate if candidate.is_absolute() else (base / candidate).resolve()
 
     if path.exists():
-        if path.is_file():
-            return path
-        raise TitleError(f"Target {path} is not a file")
+        if not path.is_file():
+            raise TitleError(f"Target {path} is not a file")
+        if not path.resolve().is_relative_to(base):
+            raise TitleError(f"Target {path} is outside the ADR directory")
+        return path
 
     search_paths = list(adr_dir.glob(f"{target}.md"))
     if search_paths:
@@ -287,20 +287,18 @@ def _rewrite_links(base: Path, old_path: Path, new_path: Path) -> list[Path]:
     updated: list[Path] = []
     for entry in sorted(base.rglob("*.md")):
         original = entry.read_text(encoding="utf-8")
-        new_text = _replace_links(original, entry.parent, old_path, new_path)
+        candidates = _link_candidates(entry.parent, old_path)
+        if not _needs_link_update(original, candidates):
+            continue
+        new_rel = Path(os.path.relpath(new_path, entry.parent)).as_posix()
+        new_text = _replace_links(original, candidates, new_rel)
         if new_text != original:
             entry.write_text(new_text, encoding="utf-8")
             updated.append(entry)
     return updated
 
 
-def _replace_links(text: str, start: Path, old_path: Path, new_path: Path) -> str:
-    old_rel = Path(os.path.relpath(old_path, start)).as_posix()
-    new_rel = Path(os.path.relpath(new_path, start)).as_posix()
-    candidates = {old_rel}
-    if not old_rel.startswith("../"):
-        candidates.add(f"./{old_rel}")
-
+def _replace_links(text: str, candidates: set[str], new_rel: str) -> str:
     def inline(match: re.Match[str]) -> str:
         target = match.group("target")
         base, suffix = _split_suffix(target)
@@ -318,6 +316,18 @@ def _replace_links(text: str, start: Path, old_path: Path, new_path: Path) -> st
     text = _INLINE_LINK_RE.sub(inline, text)
     text = _REFERENCE_LINK_RE.sub(reference, text)
     return text
+
+
+def _link_candidates(start: Path, old_path: Path) -> set[str]:
+    rel = Path(os.path.relpath(old_path, start)).as_posix()
+    candidates = {rel}
+    if not rel.startswith("../"):
+        candidates.add(f"./{rel}")
+    return candidates
+
+
+def _needs_link_update(text: str, candidates: set[str]) -> bool:
+    return any(candidate in text for candidate in candidates)
 
 
 def _split_suffix(target: str) -> tuple[str, str]:
