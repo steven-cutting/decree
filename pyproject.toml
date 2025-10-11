@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "decree"
-version = "0.1.0"  # updated from tag
+version = "0.2.0"
 description = "Decree: Python 3.11+ reimplementation of adr-tools with a typed API and Typer CLI."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -37,8 +37,15 @@ dev = [
 "pymarkdownlnt>=0.9.17",
 ]
 
+[dependency-groups]
+dev = [
+    "ipython>=9.6.0",
+    "pre-commit>=4.3.0",
+]
+
 [project.scripts]
 decree = "decree.cli:main"
+dev = "dev.cli:main"
 
 [tool.uv]
 [tool.uv.pip]
@@ -65,7 +72,7 @@ ignore = [
     "D103",  # tests do not require function docstrings
     "S101",  # pytest assertions rely on bare assert statements
 ]
-"tests/test_cli_success_paths.py" = [
+"tests/decree/test_cli_success_paths.py" = [
     "SLF001",  # tests intentionally exercise a private helper for error handling
 ]
 
@@ -91,9 +98,3 @@ source = ["decree"]
 [tool.coverage.report]
 fail_under = 90
 show_missing = true
-
-[dependency-groups]
-dev = [
-    "ipython>=9.6.0",
-    "pre-commit>=4.3.0",
-]
