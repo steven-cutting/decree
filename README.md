@@ -4,10 +4,60 @@ Python 3.11+ reimplementation of `adr-tools` with a typed API and a Typer CLI.
 
 ## install
 
+Decree is published on PyPI and can be installed on Linux, macOS, or Windows.
+We recommend using either **pipx** or **uv** for a clean, isolated installation.
+
+### Install with pipx
+
+`pipx` installs Python CLI tools in their own virtual environments so they do
+not interfere with system packages.
+
 ```bash
+pipx ensurepath
 pipx install decree
-# or after release: brew install steven-cutting/decree/decree
-````
+decree --help
+```
+
+Upgrade:
+
+```bash
+pipx upgrade decree
+```
+
+Uninstall:
+
+```bash
+pipx uninstall decree
+```
+
+Works on Ubuntu, Debian, macOS, and Windows. Uses your system Python (3.11 or newer). No sudo is required for the app itself.
+
+Install with uv
+
+uv is a Rust-based Python toolchain designed for speed and reproducibility.
+
+Install uv: [guide](https://docs.astral.sh/uv/getting-started/installation/)
+
+Install decree:
+
+```bash
+uv tool install decree
+decree --help
+```
+
+Upgrade:
+
+```bash
+uv tool upgrade decree
+```
+
+Uninstall:
+
+```bash
+uv tool uninstall decree
+```
+
+uv does not require system Python once installed.
 
 ## quickstart
 
