@@ -19,8 +19,7 @@ _HYPHEN_NORMALIZER = re.compile(r"-+")
 
 def slugify(title: str) -> str:
     """Return a filesystem-friendly slug for ``title``."""
-    slug = _boltons_slugify(title, delim="-", lower=True, ascii=True)
-    slug_text = slug.decode("ascii") if isinstance(slug, bytes) else slug
+    slug_text = _boltons_slugify(title, delim="-", lower=True, ascii=True)
     slug_text = _NON_SLUG_CHARS.sub("-", slug_text)
     return _HYPHEN_NORMALIZER.sub("-", slug_text).strip("-")
 
