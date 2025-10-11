@@ -1,12 +1,19 @@
+"""Data structures used throughout the Decree package."""
+
 from __future__ import annotations
 
 from collections.abc import Iterable
 from dataclasses import dataclass
 from enum import StrEnum
-from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 class AdrStatus(StrEnum):
+    """Permitted lifecycle states for an architecture decision record."""
+
     Accepted = "Accepted"
     Proposed = "Proposed"
     Superseded = "Superseded"
@@ -16,11 +23,15 @@ class AdrStatus(StrEnum):
 
 @dataclass(frozen=True, slots=True)
 class AdrRef:
+    """Reference to an ADR by its numeric identifier."""
+
     number: int
 
 
 @dataclass(frozen=True, slots=True)
 class LinkSpec:
+    """Relationship request between two ADRs."""
+
     src: AdrRef
     rel: str
     tgt: AdrRef
@@ -29,6 +40,8 @@ class LinkSpec:
 
 @dataclass(frozen=True, slots=True)
 class AdrRecord:
+    """Materialized ADR entry as persisted on disk."""
+
     number: int
     slug: str
     title: str

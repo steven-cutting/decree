@@ -1,9 +1,10 @@
+"""Typer-powered command line interface for Decree."""
+
 from __future__ import annotations
 
 import sys
-from collections.abc import Callable
 from pathlib import Path
-from typing import Annotated
+from typing import TYPE_CHECKING, Annotated
 
 import click
 import typer
@@ -11,8 +12,11 @@ import typer
 from .core import AdrLog
 from .exitcodes import ExitCode, exit_with
 from .models import AdrRef, AdrStatus
-from .title import sync_titles, update_title
+from .title import ExecutionContext, sync_titles, update_title
 from .utils import resolve_date
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 app = typer.Typer(add_completion=False, help="Decree: typed Python reimplementation of adr-tools")
 title_app = typer.Typer(add_completion=False, help="Manage ADR titles.")
@@ -22,7 +26,9 @@ DEFAULT_ADR_DIR = Path("doc/adr")
 
 
 def _validate_date_option(
-    ctx: typer.Context, param: typer.CallbackParam, value: str | None
+    ctx: typer.Context,
+    param: typer.CallbackParam,
+    value: str | None,
 ) -> str | None:
     if value is None:
         return None
@@ -35,20 +41,22 @@ def _validate_date_option(
 
 @app.command()
 def init(
-    dir: Annotated[
-        Path | None, typer.Argument(help="Directory to initialize (defaults to ./doc/adr)")
+    directory: Annotated[
+        Path | None,
+        typer.Argument(help="Directory to initialize (defaults to ./doc/adr)"),
     ] = None,
 ) -> None:
     """Initialize ADR repository."""
-    AdrLog.init(dir)
-    typer.echo(f"Initialized ADR directory at {(dir or DEFAULT_ADR_DIR).resolve()}")
+    log = AdrLog.init(directory)
+    typer.echo(f"Initialized ADR directory at {log.dir}")
 
 
 @app.command()
 def new(
     title: Annotated[list[str], typer.Argument(help="Title words of the ADR")],
     status: Annotated[
-        AdrStatus, typer.Option("--status", case_sensitive=False)
+        AdrStatus,
+        typer.Option("--status", case_sensitive=False),
     ] = AdrStatus.Accepted,
     template: Annotated[
         Path | None,
@@ -58,7 +66,7 @@ def new(
             help="Path to template (can also be set via ADR_TEMPLATE)",
         ),
     ] = None,
-    dir: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
+    directory: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
     date: Annotated[
         str | None,
         typer.Option(
@@ -72,8 +80,11 @@ def new(
     template_path = _resolve_template_path(template)
 
     try:
-        rec = AdrLog(dir or DEFAULT_ADR_DIR).new(
-            " ".join(title), status=status, template=template_path, date=date
+        rec = AdrLog(directory or DEFAULT_ADR_DIR).new(
+            " ".join(title),
+            status=status,
+            template=template_path,
+            date=date,
         )
     except ValueError as exc:
         raise _click_exception(str(exc), ExitCode.CONFIG_ERROR) from exc
@@ -88,29 +99,28 @@ def _resolve_template_path(template: Path | None) -> Path | None:
     try:
         candidate = expanded.resolve()
     except OSError as exc:  # pragma: no cover - resolution errors are rare but handled
-        raise _click_exception(
-            f"Could not resolve template path {expanded}: {exc}", ExitCode.UNAVAILABLE
-        ) from exc
+        message = f"Could not resolve template path {expanded}: {exc}"
+        raise _click_exception(message, ExitCode.UNAVAILABLE) from exc
 
     try:
         exists = candidate.exists()
     except OSError as exc:
-        raise _click_exception(
-            f"Could not access template path {candidate}: {exc}", ExitCode.UNAVAILABLE
-        ) from exc
+        message = f"Could not access template path {candidate}: {exc}"
+        raise _click_exception(message, ExitCode.UNAVAILABLE) from exc
 
     if not exists:
-        raise _click_exception(f"Template not found: {candidate}", ExitCode.INPUT_MISSING)
+        message = f"Template not found: {candidate}"
+        raise _click_exception(message, ExitCode.INPUT_MISSING)
     if not candidate.is_file():
-        raise _click_exception(f"Template path is not a file: {candidate}", ExitCode.INPUT_MISSING)
+        message = f"Template path is not a file: {candidate}"
+        raise _click_exception(message, ExitCode.INPUT_MISSING)
 
     try:
         with candidate.open("r", encoding="utf-8"):
             pass
     except OSError as exc:
-        raise _click_exception(
-            f"Could not read template at {candidate}: {exc}", ExitCode.INPUT_MISSING
-        ) from exc
+        message = f"Could not read template at {candidate}: {exc}"
+        raise _click_exception(message, ExitCode.INPUT_MISSING) from exc
 
     return candidate
 
@@ -120,54 +130,57 @@ def link(
     src: Annotated[int, typer.Argument(help="Source ADR number")],
     rel: Annotated[str, typer.Argument(help="Relationship label, e.g., Supersedes")],
     tgt: Annotated[int, typer.Argument(help="Target ADR number")],
-    reverse: Annotated[
-        bool, typer.Option("--reverse/--no-reverse", help="Also add reverse link")
+    reverse: Annotated[  # noqa: FBT002 - Typer option uses boolean defaults
+        bool,
+        typer.Option("--reverse/--no-reverse", help="Also add reverse link"),
     ] = False,
-    dir: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
+    directory: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
 ) -> None:
     """Add a relationship between ADRs."""
-    AdrLog(dir or DEFAULT_ADR_DIR).link(AdrRef(src), rel, AdrRef(tgt), reverse=reverse)
+    AdrLog(directory or DEFAULT_ADR_DIR).link(AdrRef(src), rel, AdrRef(tgt), reverse=reverse)
     typer.echo("Linked")
 
 
 @app.command("list")
 def list_cmd(
-    dir: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
+    directory: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
 ) -> None:
     """List ADRs."""
-    for r in AdrLog(dir or DEFAULT_ADR_DIR).list():
+    for r in AdrLog(directory or DEFAULT_ADR_DIR).list():
         typer.echo(f"{r.number:04d} {r.date} {r.status.value} {r.title}")
 
 
 @app.command("generate")
 def generate(
     what: Annotated[str, typer.Argument(help="What to generate: toc|graph")],
-    dir: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
+    directory: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
 ) -> None:
     """Generate artifacts (toc; graph not implemented)."""
-    log = AdrLog(dir or DEFAULT_ADR_DIR)
+    log = AdrLog(directory or DEFAULT_ADR_DIR)
     if what == "toc":
         typer.echo(log.generate_toc())
     elif what == "graph":
-        raise _click_exception("generate graph is not implemented", ExitCode.UNAVAILABLE)
+        message = "generate graph is not implemented"
+        raise _click_exception(message, ExitCode.UNAVAILABLE)
     else:
-        raise click.UsageError("unknown artifact, expected 'toc' or 'graph'")
+        message = "unknown artifact, expected 'toc' or 'graph'"
+        raise click.UsageError(message)
 
 
 @app.command("upgrade-repository")
 def upgrade_repository(
-    dir: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
+    directory: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
 ) -> None:
     """Validate repository (v1 no-op)."""
-    AdrLog(dir or DEFAULT_ADR_DIR).upgrade()
+    AdrLog(directory or DEFAULT_ADR_DIR).upgrade()
     typer.echo("OK")
 
 
-def _title_dir(dir: Path | None) -> Path:
-    return (dir or DEFAULT_ADR_DIR).resolve()
+def _title_dir(directory: Path | None) -> Path:
+    return (directory or DEFAULT_ADR_DIR).resolve()
 
 
-def _title_echo(dry_run: bool) -> Callable[[str], None]:
+def _title_echo(*, dry_run: bool) -> Callable[[str], None]:
     prefix = "DRY-RUN: " if dry_run else ""
 
     def _emit(message: str) -> None:
@@ -180,49 +193,48 @@ def _title_echo(dry_run: bool) -> Callable[[str], None]:
 def title_set(
     target: Annotated[str, typer.Argument(help="ADR number, slug, or path to update")],
     title: Annotated[list[str], typer.Argument(help="New title words")],
-    dir: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
+    directory: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
     rename: Annotated[
         bool | None,
         typer.Option("--rename/--no-rename", help="Rename ADR file to match the new title"),
     ] = None,
-    dry_run: Annotated[
+    dry_run: Annotated[  # noqa: FBT002  # CLI option, not positional
         bool, typer.Option("--dry-run", help="Preview changes without writing")
     ] = False,
 ) -> None:
     """Update an ADR title."""
-
+    ctx = ExecutionContext(dry_run=dry_run, emit=_title_echo(dry_run=dry_run))
     update_title(
-        _title_dir(dir),
+        _title_dir(directory),
         target,
         " ".join(title),
         rename=rename,
-        dry_run=dry_run,
-        emit=_title_echo(dry_run),
+        ctx=ctx,
     )
 
 
 @title_app.command("sync")
 def title_sync(
-    dir: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
+    directory: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
     rename: Annotated[
         bool | None,
         typer.Option("--rename/--no-rename", help="Rename ADR files to match their titles"),
     ] = None,
-    dry_run: Annotated[
+    dry_run: Annotated[  # noqa: FBT002  # CLI option, not positional
         bool, typer.Option("--dry-run", help="Preview changes without writing")
     ] = False,
 ) -> None:
     """Sync ADR filenames and headings with their titles."""
-
+    ctx = ExecutionContext(dry_run=dry_run, emit=_title_echo(dry_run=dry_run))
     sync_titles(
-        _title_dir(dir),
+        _title_dir(directory),
         rename=rename,
-        dry_run=dry_run,
-        emit=_title_echo(dry_run),
+        ctx=ctx,
     )
 
 
 def main() -> None:
+    """Entrypoint for :mod:`decree.cli` that maps exceptions to exit codes."""
     try:
         app(standalone_mode=False)
     except click.UsageError as exc:
@@ -242,13 +254,12 @@ def main() -> None:
         exit_with(ExitCode.UNAVAILABLE, str(exc))
     except KeyboardInterrupt:
         exit_with(ExitCode.GENERAL_ERROR, "Aborted!")
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001 - fall back to a generic exit code
         exit_with(ExitCode.GENERAL_ERROR, str(exc))
 
 
 class DecreeClickException(click.ClickException):
-    """
-    An exception class for Decree CLI errors that allows specifying a custom exit code.
+    """An exception class for Decree CLI errors that allows specifying a custom exit code.
 
     This class extends `click.ClickException` by adding an `exit_code` attribute,
     which is used to control the exit status of the CLI when the exception is raised.
@@ -256,6 +267,7 @@ class DecreeClickException(click.ClickException):
     """
 
     def __init__(self, message: str, exit_code: int) -> None:
+        """Capture a custom exit code alongside the Click message."""
         super().__init__(message)
         self.exit_code = exit_code
 

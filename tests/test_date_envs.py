@@ -21,6 +21,5 @@ def test_env_override_wins_over_today() -> None:
 def test_invalid_override_raises() -> None:
     invalid_date = "1999/12/31"
     frozen_today = date(2024, 1, 2)
-    with pytest.raises(ValueError) as exc:
+    with pytest.raises(ValueError, match=invalid_date):
         resolve_date(env={"ADR_DATE": invalid_date}, today=lambda: frozen_today)
-    assert invalid_date in str(exc.value)

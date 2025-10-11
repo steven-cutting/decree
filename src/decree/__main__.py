@@ -1,3 +1,5 @@
+"""Command-line entrypoint for ``python -m decree``."""
+
 from .cli import main
 
 # The module-level entrypoint is invoked by ``python -m decree`` which runs in a
