@@ -25,6 +25,45 @@ new `AdrLog.unlink` API removes relationships with the same parity guarantees.
 * Centralizing the IO logic simplifies future enhancements (e.g., custom
   relationship types) while keeping parity testable.
 
+## Usage Examples
+
+### Basic linking
+
+```bash
+# Add forward link only
+decree link 2 Supersedes 1
+
+# Adds to 0002: "Supersedes: 0001"
+```
+
+### Bidirectional linking with --reverse
+
+```bash
+# Add both forward and reverse links
+decree link 2 Supersedes 1 --reverse
+
+# Adds to 0002: "Supersedes: 0001"
+# Adds to 0001: "Is superseded by: 0002"
+```
+
+### Other relationship types
+
+```bash
+decree link 3 Amends 1 --reverse
+# Adds to 0003: "Amends: 0001"
+# Adds to 0001: "Is amended by: 0003"
+```
+
+### Removing relationships
+
+```bash
+# Remove bidirectional link
+decree unlink 2 Supersedes 1 --reverse
+
+# Removes "Supersedes: 0001" from 0002
+# Removes "Is superseded by: 0002" from 0001
+```
+
 ## Alternatives considered
 
 * Leave the previous implementation untouched – kept historical quirks and

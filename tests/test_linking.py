@@ -131,3 +131,28 @@ def test_unlink_preserves_spacing_with_additional_links(tmp_path: Path) -> None:
     remaining_index = src_lines.index(remaining_line)
     assert remaining_index > 0
     assert src_lines[remaining_index - 1] == ""
+
+
+def test_link_idempotency_forward_only(tmp_path: Path) -> None:
+    """Linking the same forward relationship multiple times should not create duplicates."""
+    log = AdrLog.init(tmp_path / "doc" / "adr")
+    src_record = log.new("First Decision")
+    tgt_record = log.new("Second Decision")
+
+    src_ref = AdrRef(src_record.number)
+    tgt_ref = AdrRef(tgt_record.number)
+
+    # Link three times with same forward-only relationship
+    log.link(src_ref, "References", tgt_ref, reverse=False)
+    log.link(src_ref, "References", tgt_ref, reverse=False)
+    log.link(src_ref, "References", tgt_ref, reverse=False)
+
+    src_lines = _read_lines(src_record.path)
+    tgt_lines = _read_lines(tgt_record.path)
+
+    forward_line = f"References: {tgt_record.number:04d}"
+    reverse_line = f"Is referenced by: {src_record.number:04d}"
+
+    # Should only appear once in source, not at all in target
+    assert src_lines.count(forward_line) == 1
+    assert reverse_line not in tgt_lines
