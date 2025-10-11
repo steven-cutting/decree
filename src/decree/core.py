@@ -2,14 +2,11 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable as _Iterable
 from pathlib import Path
 from typing import TYPE_CHECKING, NoReturn
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
-else:  # pragma: no cover - runtime alias for type checking compatibility
-    Iterable = _Iterable
 
 from beartype import beartype
 

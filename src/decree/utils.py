@@ -4,9 +4,12 @@ from __future__ import annotations
 
 import os
 import re
-import typing
 import unicodedata
 from datetime import date
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Mapping
 
 
 def slugify(title: str) -> str:
@@ -29,11 +32,11 @@ def _validate_date(value: str) -> str:
 def resolve_date(
     *,
     cli_date: str | None = None,
-    env: typing.Mapping[str, str] | None = None,
-    today: typing.Callable[[], date] = date.today,
+    env: Mapping[str, str] | None = None,
+    today: Callable[[], date] = date.today,
 ) -> str:
     """Resolve the ADR date using CLI input, environment overrides, or the system clock."""
-    actual_env: typing.Mapping[str, str] = os.environ if env is None else env
+    actual_env: Mapping[str, str] = os.environ if env is None else env
     value = cli_date or actual_env.get("ADR_DATE")
     if value is None:
         value = today().isoformat()
