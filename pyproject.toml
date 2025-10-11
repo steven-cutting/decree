@@ -53,7 +53,8 @@ select = ["ALL"]  # enable all stable rule families
 ignore = [
     "COM812",  # avoid formatter conflicts with ruff-format
     "D203",    # incompatible with D211 (no-blank-line-before-class)
-    "D213",    # incompatible with D212 (multi-line-summary-first-line)
+    "D213",    # incompatible with D212 (multi-line-summary-first-line
+    "TC003",   # type annotation only imports are used by beartype at runtime.
 ]
 
 [tool.ruff.lint.per-file-ignores]

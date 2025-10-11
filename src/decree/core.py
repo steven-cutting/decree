@@ -2,11 +2,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterator
 from pathlib import Path
-from typing import TYPE_CHECKING, NoReturn
-
-if TYPE_CHECKING:
-    from collections.abc import Iterable
+from typing import NoReturn
 
 from beartype import beartype
 
@@ -115,7 +113,7 @@ class AdrLog:
         return self._write(next_num, title, status, template, date)
 
     @beartype
-    def list(self) -> Iterable[AdrRecord]:
+    def list(self) -> Iterator[AdrRecord]:
         """Yield all ADR records sorted by numeric identifier."""
         for path in sorted(self.dir.glob("[0-9][0-9][0-9][0-9]-*.md")):
             number = int(path.name[:4])
