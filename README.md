@@ -30,7 +30,9 @@ Uninstall:
 pipx uninstall decree
 ```
 
-Works on Ubuntu, Debian, macOS, and Windows. Uses your system Python (3.11 or newer). No sudo is required for the app itself.
+Works on Ubuntu, Debian, macOS, and Windows.
+Uses your system Python (3.11 or newer).
+No sudo is required for the app itself.
 
 ### Install with uv
 
