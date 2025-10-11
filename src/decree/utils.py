@@ -1,15 +1,10 @@
 """Utility helpers for string normalization and configuration resolution."""
 
-from __future__ import annotations
-
 import os
 import re
 import unicodedata
+from collections.abc import Callable, Mapping
 from datetime import date
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from collections.abc import Callable, Mapping
 
 
 def slugify(title: str) -> str:

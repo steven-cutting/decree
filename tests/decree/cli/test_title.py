@@ -1,15 +1,10 @@
-from __future__ import annotations
-
+from collections.abc import Iterator
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 import pytest
 from typer.testing import CliRunner
 
 from decree.cli import app
-
-if TYPE_CHECKING:
-    from collections.abc import Iterator
 
 runner = CliRunner()
 

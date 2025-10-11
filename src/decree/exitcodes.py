@@ -1,7 +1,5 @@
 """Utilities for consistent CLI exit codes."""
 
-from __future__ import annotations
-
 import os
 import sys
 from enum import IntEnum

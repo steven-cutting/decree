@@ -1,7 +1,5 @@
 """Built-in ADR templates and seed content."""
 
-from __future__ import annotations
-
 DEFAULT_TEMPLATE = """# {number}: {title}
 
 Date: {date}

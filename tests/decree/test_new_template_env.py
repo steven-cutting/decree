@@ -1,16 +1,11 @@
-from __future__ import annotations
-
 from pathlib import Path
 from secrets import token_hex
-from typing import TYPE_CHECKING
+import pytest
 
 from typer.testing import CliRunner
 
 from decree.cli import app
 from decree.core import AdrLog
-
-if TYPE_CHECKING:
-    import pytest
 
 runner = CliRunner()
 

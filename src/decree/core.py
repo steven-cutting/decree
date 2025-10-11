@@ -1,7 +1,5 @@
 """Core domain logic for manipulating ADR repositories."""
 
-from __future__ import annotations
-
 from collections.abc import Iterator
 from pathlib import Path
 from typing import NoReturn
@@ -88,7 +86,7 @@ class AdrLog:
 
     @classmethod
     @beartype
-    def init(cls, directory: Path | None = None) -> AdrLog:
+    def init(cls, directory: Path | None = None) -> "AdrLog":
         """Initialise an ADR repository, seeding record 0001 when absent."""
         base = Path.cwd()
         adr_dir = (directory or (base / ADR_DIR_DEFAULT)).resolve()
