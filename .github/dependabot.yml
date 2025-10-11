@@ -1,4 +1,5 @@
 # .github/dependabot.yml
+---
 version: 2
 
 # Use uv if the project uses uv.lock. Keep pip as a fallback if not.
