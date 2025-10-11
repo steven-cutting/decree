@@ -17,7 +17,7 @@ PYPROJECT_FILE = PROJECT_ROOT / "pyproject.toml"
 
 
 @app.command()
-def validate_verion(
+def validate_version(
     version: Annotated[
         str,
         typer.Argument(help="Version to validate"),

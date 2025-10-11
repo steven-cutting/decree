@@ -28,7 +28,7 @@ jobs:
       - name: Verify release version matches project version
         # script verifies that the input string matches the version in the
         # projects pyproject.toml
-        run: uv run dev validate-verion ${{ github.event.release.name }}
+        run: uv run dev validate-version ${{ github.event.release.name }}
 
       - name: Build release distributions
         run: |
