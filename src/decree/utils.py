@@ -2,12 +2,10 @@
 
 import os
 import re
-import unicodedata
 from collections.abc import Callable, Mapping
 from datetime import date
 
 from boltons.strutils import slugify as _boltons_slugify
-
 
 _NON_SLUG_CHARS = re.compile(r"[^a-z0-9-]+")
 _HYPHEN_NORMALIZER = re.compile(r"-+")
