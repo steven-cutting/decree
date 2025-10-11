@@ -1,6 +1,4 @@
-from __future__ import annotations
-
-from typing import TYPE_CHECKING
+from pathlib import Path
 
 import pytest
 
@@ -20,9 +18,6 @@ from decree.title import (
     _split_suffix,
     _title_from_slug,
 )
-
-if TYPE_CHECKING:
-    from pathlib import Path
 
 
 def test_resolve_adr_dir_validation(tmp_path: Path) -> None:

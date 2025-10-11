@@ -1,7 +1,7 @@
 from pathlib import Path
 from secrets import token_hex
-import pytest
 
+import pytest
 from typer.testing import CliRunner
 
 from decree.cli import app
