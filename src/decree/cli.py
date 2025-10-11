@@ -1,10 +1,9 @@
 """Typer-powered command line interface for Decree."""
 
-from __future__ import annotations
-
 import sys
+from collections.abc import Callable
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated
+from typing import Annotated
 
 import click
 import typer
@@ -14,9 +13,6 @@ from .exitcodes import ExitCode, exit_with
 from .models import AdrRef, AdrStatus
 from .title import ExecutionContext, sync_titles, update_title
 from .utils import resolve_date
-
-if TYPE_CHECKING:
-    from collections.abc import Callable
 
 app = typer.Typer(add_completion=False, help="Decree: typed Python reimplementation of adr-tools")
 title_app = typer.Typer(add_completion=False, help="Manage ADR titles.")

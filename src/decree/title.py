@@ -4,21 +4,16 @@ This module provides functionality for updating and synchronizing ADR titles,
 including renaming files and updating cross-references throughout the ADR directory.
 """
 
-from __future__ import annotations
-
 import os
 import re
 import tomllib
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 import click
 
 from .utils import slugify
-
-if TYPE_CHECKING:
-    from collections.abc import Callable, Iterable
 
 
 @dataclass

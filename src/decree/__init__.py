@@ -1,7 +1,5 @@
 """Public package exports for the :mod:`decree` library."""
 
-from __future__ import annotations
-
 __all__ = ["AdrLog", "AdrRecord", "AdrRef", "AdrStatus", "ExitCode", "LinkSpec"]
 
 from .core import AdrLog

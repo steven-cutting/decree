@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import pytest
 
 from decree.exitcodes import ExitCode, exit_with

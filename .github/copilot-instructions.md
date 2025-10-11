@@ -32,6 +32,9 @@ The `AdrLog` class handles file I/O, numbering, and linking between records.
   decorator on `AdrLog` methods
 - **Frozen dataclasses**: Use `@dataclass(frozen=True, slots=True)` for
   immutable models
+- **No future annotations import**: Target Python 3.11+ semantics and avoid
+  `from __future__ import annotations`; quote forward references or import
+  symbols as needed. Applies to Copilot and Codex suggestions alike.
 
 ### Testing Approach (ADR-0008)
 

@@ -1,17 +1,11 @@
 """Utility helpers for string normalization and configuration resolution."""
 
-from __future__ import annotations
-
 import os
 import re
+from collections.abc import Callable, Mapping
 from datetime import date
-from typing import TYPE_CHECKING
 
 from boltons.strutils import slugify as _boltons_slugify
-
-if TYPE_CHECKING:
-    from collections.abc import Callable, Mapping
-
 
 _NON_SLUG_CHARS = re.compile(r"[^a-z0-9-]+")
 _HYPHEN_NORMALIZER = re.compile(r"-+")
