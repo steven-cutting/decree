@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "decree"
-version = "0.1.0"  # updated from tag
+version = "0.2.0"
 description = "Decree: Python 3.11+ reimplementation of adr-tools with a typed API and Typer CLI."
 readme = "README.md"
 requires-python = ">=3.11"
