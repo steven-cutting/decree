@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+from collections.abc import Callable
 from pathlib import Path
 from typing import Annotated
 
@@ -12,9 +13,14 @@ import typer
 from .core import AdrLog
 from .exitcodes import ExitCode, exit_with
 from .models import AdrRef, AdrStatus
+from .title import sync_titles, update_title
 from .utils import resolve_date
 
 app = typer.Typer(add_completion=False, help="Decree: typed Python reimplementation of adr-tools")
+title_app = typer.Typer(add_completion=False, help="Manage ADR titles.")
+app.add_typer(title_app, name="title")
+
+DEFAULT_ADR_DIR = Path("doc/adr")
 
 
 def _validate_date_option(
@@ -72,7 +78,7 @@ def new(
     template_path = _resolve_template_path(template)
 
     try:
-        rec = AdrLog(directory or Path("doc/adr")).new(
+        rec = AdrLog(directory or DEFAULT_ADR_DIR).new(
             " ".join(title),
             status=status,
             template=template_path,
@@ -129,7 +135,7 @@ def link(
     directory: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
 ) -> None:
     """Add a relationship between ADRs."""
-    AdrLog(directory or Path("doc/adr")).link(AdrRef(src), rel, AdrRef(tgt), reverse=reverse)
+    AdrLog(directory or DEFAULT_ADR_DIR).link(AdrRef(src), rel, AdrRef(tgt), reverse=reverse)
     typer.echo("Linked")
 
 
@@ -138,7 +144,7 @@ def list_cmd(
     directory: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
 ) -> None:
     """List ADRs."""
-    for r in AdrLog(directory or Path("doc/adr")).list():
+    for r in AdrLog(directory or DEFAULT_ADR_DIR).list():
         typer.echo(f"{r.number:04d} {r.date} {r.status.value} {r.title}")
 
 
@@ -148,7 +154,7 @@ def generate(
     directory: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
 ) -> None:
     """Generate artifacts (toc; graph not implemented)."""
-    log = AdrLog(directory or Path("doc/adr"))
+    log = AdrLog(directory or DEFAULT_ADR_DIR)
     if what == "toc":
         typer.echo(log.generate_toc())
     elif what == "graph":
@@ -164,8 +170,67 @@ def upgrade_repository(
     directory: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
 ) -> None:
     """Validate repository (v1 no-op)."""
-    AdrLog(directory or Path("doc/adr")).upgrade()
+    AdrLog(directory or DEFAULT_ADR_DIR).upgrade()
     typer.echo("OK")
+
+
+def _title_dir(dir: Path | None) -> Path:
+    return (dir or DEFAULT_ADR_DIR).resolve()
+
+
+def _title_echo(dry_run: bool) -> Callable[[str], None]:
+    prefix = "DRY-RUN: " if dry_run else ""
+
+    def _emit(message: str) -> None:
+        typer.echo(f"{prefix}{message}")
+
+    return _emit
+
+
+@title_app.command("set")
+def title_set(
+    target: Annotated[str, typer.Argument(help="ADR number, slug, or path to update")],
+    title: Annotated[list[str], typer.Argument(help="New title words")],
+    dir: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
+    rename: Annotated[
+        bool | None,
+        typer.Option("--rename/--no-rename", help="Rename ADR file to match the new title"),
+    ] = None,
+    dry_run: Annotated[
+        bool, typer.Option("--dry-run", help="Preview changes without writing")
+    ] = False,
+) -> None:
+    """Update an ADR title."""
+
+    update_title(
+        _title_dir(dir),
+        target,
+        " ".join(title),
+        rename=rename,
+        dry_run=dry_run,
+        emit=_title_echo(dry_run),
+    )
+
+
+@title_app.command("sync")
+def title_sync(
+    dir: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
+    rename: Annotated[
+        bool | None,
+        typer.Option("--rename/--no-rename", help="Rename ADR files to match their titles"),
+    ] = None,
+    dry_run: Annotated[
+        bool, typer.Option("--dry-run", help="Preview changes without writing")
+    ] = False,
+) -> None:
+    """Sync ADR filenames and headings with their titles."""
+
+    sync_titles(
+        _title_dir(dir),
+        rename=rename,
+        dry_run=dry_run,
+        emit=_title_echo(dry_run),
+    )
 
 
 def main() -> None:
