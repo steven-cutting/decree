@@ -1,3 +1,9 @@
+"""Title management for Architecture Decision Records.
+
+This module provides functionality for updating and synchronizing ADR titles,
+including renaming files and updating cross-references throughout the ADR directory.
+"""
+
 from __future__ import annotations
 
 import os
@@ -17,11 +23,43 @@ if TYPE_CHECKING:
 
 @dataclass
 class TitleConfig:
+    """Configuration for title update operations.
+
+    Attributes:
+        rename: Whether to rename ADR files to match their titles.
+
+    """
+
     rename: bool = True
 
 
 @dataclass
+class ExecutionContext:
+    """Context for executing title operations.
+
+    Attributes:
+        dry_run: If True, preview changes without writing.
+        emit: Callback function to output messages.
+
+    """
+
+    dry_run: bool
+    emit: Callable[[str], None]
+
+
+@dataclass
 class HeadingInfo:
+    """Information extracted from an ADR heading line.
+
+    Attributes:
+        hashes: The hash marks (e.g., '##') indicating heading level.
+        space: Whitespace between hash marks and content.
+        prefix: Optional numeric or date prefix (e.g., '0001' or '2025-10-10').
+        separator: Separator between prefix and title (e.g., '. ' or ': ').
+        title: The actual title text.
+
+    """
+
     hashes: str
     space: str
     prefix: str | None
@@ -40,7 +78,15 @@ _REFERENCE_LINK_RE = re.compile(r"(?m)^(?P<prefix>\[[^\]]+\]:\s*)(?P<target>\S+)
 
 
 class TitleError(click.ClickException):
+    """Exception raised when title operations fail."""
+
     def __init__(self, message: str) -> None:
+        """Initialize the error with a message.
+
+        Args:
+            message: Human-readable error description.
+
+        """
         super().__init__(message)
 
 
@@ -50,8 +96,7 @@ def update_title(
     new_title: str,
     *,
     rename: bool | None,
-    dry_run: bool,
-    emit: Callable[[str], None],
+    ctx: ExecutionContext,
 ) -> None:
     """Update a single ADR title and optionally rename the file."""
     base = _resolve_adr_dir(adr_dir)
@@ -60,17 +105,17 @@ def update_title(
 
     path = _resolve_target(base, target)
 
-    if _mutate_heading(path, new_title, dry_run=dry_run):
-        emit(f"Updated title in {path.relative_to(base)}")
+    if _mutate_heading(path, new_title, dry_run=ctx.dry_run):
+        ctx.emit(f"Updated title in {path.relative_to(base)}")
 
     if rename_flag:
-        new_path, renamed = _rename_to_slug(path, new_title, dry_run=dry_run)
+        new_path, renamed = _rename_to_slug(path, new_title, dry_run=ctx.dry_run)
         if renamed:
-            emit(f"Renamed {path.name} -> {new_path.name}")
-            if not dry_run:
+            ctx.emit(f"Renamed {path.name} -> {new_path.name}")
+            if not ctx.dry_run:
                 updated = _rewrite_links(base, path, new_path)
                 for entry in updated:
-                    emit(f"Updated links in {entry.relative_to(base)}")
+                    ctx.emit(f"Updated links in {entry.relative_to(base)}")
             path = new_path
 
 
@@ -78,8 +123,7 @@ def sync_titles(
     adr_dir: Path,
     *,
     rename: bool | None,
-    dry_run: bool,
-    emit: Callable[[str], None],
+    ctx: ExecutionContext,
 ) -> None:
     """Ensure ADR headings and filenames align with their titles."""
     base = _resolve_adr_dir(adr_dir)
@@ -98,9 +142,9 @@ def sync_titles(
                 title_text,
                 prefix=file_prefix,
                 default_sep=heading.separator if heading else ": ",
-                dry_run=dry_run,
+                dry_run=ctx.dry_run,
             ):
-                emit(f"Updated title in {path.relative_to(base)}")
+                ctx.emit(f"Updated title in {path.relative_to(base)}")
             heading = _get_heading(path)
 
         if rename_flag:
@@ -108,15 +152,14 @@ def sync_titles(
                 path,
                 title_text,
                 prefix=file_prefix,
-                dry_run=dry_run,
+                dry_run=ctx.dry_run,
             )
             if renamed:
-                emit(f"Renamed {path.name} -> {new_path.name}")
-                if not dry_run:
+                ctx.emit(f"Renamed {path.name} -> {new_path.name}")
+                if not ctx.dry_run:
                     updated = _rewrite_links(base, path, new_path)
                     for entry in updated:
-                        emit(f"Updated links in {entry.relative_to(base)}")
-                path = new_path
+                        ctx.emit(f"Updated links in {entry.relative_to(base)}")
 
 
 def _resolve_adr_dir(adr_dir: Path) -> Path:
@@ -196,7 +239,9 @@ def _mutate_heading(
         path.write_text(text, encoding="utf-8")
         return True
 
-    assert index is not None
+    if index is None:
+        msg = f"Could not find heading in {path}"
+        raise TitleError(msg)
     actual_prefix = prefix if prefix is not None else info.prefix
     new_line = _build_heading_line(info, new_title, prefix=actual_prefix, default_sep=default_sep)
     if lines[index] == new_line:

@@ -12,7 +12,7 @@ import typer
 from .core import AdrLog
 from .exitcodes import ExitCode, exit_with
 from .models import AdrRef, AdrStatus
-from .title import sync_titles, update_title
+from .title import ExecutionContext, sync_titles, update_title
 from .utils import resolve_date
 
 if TYPE_CHECKING:
@@ -176,11 +176,11 @@ def upgrade_repository(
     typer.echo("OK")
 
 
-def _title_dir(dir: Path | None) -> Path:
-    return (dir or DEFAULT_ADR_DIR).resolve()
+def _title_dir(directory: Path | None) -> Path:
+    return (directory or DEFAULT_ADR_DIR).resolve()
 
 
-def _title_echo(dry_run: bool) -> Callable[[str], None]:
+def _title_echo(*, dry_run: bool) -> Callable[[str], None]:
     prefix = "DRY-RUN: " if dry_run else ""
 
     def _emit(message: str) -> None:
@@ -193,43 +193,43 @@ def _title_echo(dry_run: bool) -> Callable[[str], None]:
 def title_set(
     target: Annotated[str, typer.Argument(help="ADR number, slug, or path to update")],
     title: Annotated[list[str], typer.Argument(help="New title words")],
-    dir: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
+    directory: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
     rename: Annotated[
         bool | None,
         typer.Option("--rename/--no-rename", help="Rename ADR file to match the new title"),
     ] = None,
-    dry_run: Annotated[
+    dry_run: Annotated[  # noqa: FBT002  # CLI option, not positional
         bool, typer.Option("--dry-run", help="Preview changes without writing")
     ] = False,
 ) -> None:
     """Update an ADR title."""
+    ctx = ExecutionContext(dry_run=dry_run, emit=_title_echo(dry_run=dry_run))
     update_title(
-        _title_dir(dir),
+        _title_dir(directory),
         target,
         " ".join(title),
         rename=rename,
-        dry_run=dry_run,
-        emit=_title_echo(dry_run),
+        ctx=ctx,
     )
 
 
 @title_app.command("sync")
 def title_sync(
-    dir: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
+    directory: Annotated[Path | None, typer.Option("--dir", help="ADR directory")] = None,
     rename: Annotated[
         bool | None,
         typer.Option("--rename/--no-rename", help="Rename ADR files to match their titles"),
     ] = None,
-    dry_run: Annotated[
+    dry_run: Annotated[  # noqa: FBT002  # CLI option, not positional
         bool, typer.Option("--dry-run", help="Preview changes without writing")
     ] = False,
 ) -> None:
     """Sync ADR filenames and headings with their titles."""
+    ctx = ExecutionContext(dry_run=dry_run, emit=_title_echo(dry_run=dry_run))
     sync_titles(
-        _title_dir(dir),
+        _title_dir(directory),
         rename=rename,
-        dry_run=dry_run,
-        emit=_title_echo(dry_run),
+        ctx=ctx,
     )
 
 

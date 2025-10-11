@@ -99,7 +99,8 @@ def test_title_set_dry_run_leaves_files_unchanged(adr_dir: Path) -> None:
     assert "# 0005: Original" in source.read_text(encoding="utf-8")
 
 
-def test_title_set_rejects_paths_outside_directory(adr_dir: Path) -> None:
+@pytest.mark.usefixtures("adr_dir")
+def test_title_set_rejects_paths_outside_directory() -> None:
     external = Path("outside.md")
     external.write_text("# Heading\n", encoding="utf-8")
 
