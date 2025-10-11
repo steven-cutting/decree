@@ -49,7 +49,7 @@ def test_link_command(tmp_path: Path) -> None:
 def test_resolve_template_missing(tmp_path: Path) -> None:
     missing = tmp_path / "missing.md"
     with pytest.raises(click.ClickException) as excinfo:
-        cli._resolve_template_path(missing)
+        cli._resolve_template_path(missing)  # type: ignore[attr-defined]
     assert excinfo.value.exit_code == int(ExitCode.INPUT_MISSING)
 
 
@@ -57,7 +57,7 @@ def test_resolve_template_not_file(tmp_path: Path) -> None:
     directory = tmp_path / "dir"
     directory.mkdir()
     with pytest.raises(click.ClickException) as excinfo:
-        cli._resolve_template_path(directory)
+        cli._resolve_template_path(directory)  # type: ignore[attr-defined]
     assert excinfo.value.exit_code == int(ExitCode.INPUT_MISSING)
 
 
@@ -86,13 +86,13 @@ def test_resolve_template_unreadable(tmp_path: Path, monkeypatch: pytest.MonkeyP
 
     monkeypatch.setattr(Path, "exists", fake_exists)
     with pytest.raises(click.ClickException) as excinfo:
-        cli._resolve_template_path(template)
+        cli._resolve_template_path(template)  # type: ignore[attr-defined]
     assert excinfo.value.exit_code == int(ExitCode.UNAVAILABLE)
 
     monkeypatch.setattr(Path, "exists", original_exists)
     monkeypatch.setattr(Path, "open", fake_open)
     with pytest.raises(click.ClickException) as excinfo:
-        cli._resolve_template_path(template)
+        cli._resolve_template_path(template)  # type: ignore[attr-defined]
     assert excinfo.value.exit_code == int(ExitCode.INPUT_MISSING)
 
     monkeypatch.setattr(Path, "open", original_open)
