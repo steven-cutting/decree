@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
 
@@ -20,6 +20,9 @@ from decree.title import (
     _split_suffix,
     _title_from_slug,
 )
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 def test_resolve_adr_dir_validation(tmp_path: Path) -> None:
@@ -94,7 +97,8 @@ def test_rename_to_slug_conflicts(tmp_path: Path) -> None:
     dry_run_target = tmp_path / "0010-dry-run.md"
     dry_run_target.write_text("content", encoding="utf-8")
     new_path, renamed = _rename_to_slug(dry_run_target, "Preview", dry_run=True)
-    assert renamed and new_path.name.endswith("preview.md")
+    assert renamed
+    assert new_path.name.endswith("preview.md")
     assert dry_run_target.exists()
 
 
@@ -131,7 +135,8 @@ def test_link_rewrite_helpers(tmp_path: Path) -> None:
 
     assert not _needs_link_update("No match", candidates)
     suffixed, suffix = _split_suffix("target.md?query")
-    assert suffixed == "target.md" and suffix == "?query"
+    assert suffixed == "target.md"
+    assert suffix == "?query"
 
 
 def test_title_from_slug_and_config(tmp_path: Path) -> None:

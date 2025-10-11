@@ -3,9 +3,8 @@
 from __future__ import annotations
 
 import sys
-from collections.abc import Callable
 from pathlib import Path
-from typing import Annotated
+from typing import TYPE_CHECKING, Annotated
 
 import click
 import typer
@@ -15,6 +14,9 @@ from .exitcodes import ExitCode, exit_with
 from .models import AdrRef, AdrStatus
 from .title import sync_titles, update_title
 from .utils import resolve_date
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 app = typer.Typer(add_completion=False, help="Decree: typed Python reimplementation of adr-tools")
 title_app = typer.Typer(add_completion=False, help="Manage ADR titles.")
@@ -201,7 +203,6 @@ def title_set(
     ] = False,
 ) -> None:
     """Update an ADR title."""
-
     update_title(
         _title_dir(dir),
         target,
@@ -224,7 +225,6 @@ def title_sync(
     ] = False,
 ) -> None:
     """Sync ADR filenames and headings with their titles."""
-
     sync_titles(
         _title_dir(dir),
         rename=rename,
