@@ -156,4 +156,3 @@ def test_link_idempotency_forward_only(tmp_path: Path) -> None:
     # Should only appear once in source, not at all in target
     assert src_lines.count(forward_line) == 1
     assert reverse_line not in tgt_lines
-
