@@ -4,19 +4,25 @@ from __future__ import annotations
 
 import os
 import re
-import unicodedata
 from datetime import date
 from typing import TYPE_CHECKING
+
+from boltons.strutils import slugify as _boltons_slugify
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
 
 
+_NON_SLUG_CHARS = re.compile(r"[^a-z0-9-]+")
+_HYPHEN_NORMALIZER = re.compile(r"-+")
+
+
 def slugify(title: str) -> str:
     """Return a filesystem-friendly slug for ``title``."""
-    s = unicodedata.normalize("NFKD", title).encode("ascii", "ignore").decode()
-    s = re.sub(r"[^a-zA-Z0-9]+", "-", s.lower())
-    return s.strip("-")
+    slug = _boltons_slugify(title, delim="-", lower=True, ascii=True)
+    slug_text = slug.decode("ascii") if isinstance(slug, bytes) else slug
+    slug_text = _NON_SLUG_CHARS.sub("-", slug_text)
+    return _HYPHEN_NORMALIZER.sub("-", slug_text).strip("-")
 
 
 _DATE_PATTERN = re.compile(r"\d{4}-\d{2}-\d{2}")
