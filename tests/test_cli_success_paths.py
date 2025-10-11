@@ -69,13 +69,15 @@ def test_resolve_template_unreadable(tmp_path: Path, monkeypatch: pytest.MonkeyP
 
     def fake_exists(path: Path) -> bool:
         if path == template:
-            raise OSError("no access")
+            error_message = "no access"
+            raise OSError(error_message)
         return original_exists(path)
 
-    def fake_open(self: Path, *args: object, **kwargs: object) -> object:
+    def fake_open(_self: Path, *_args: object, **_kwargs: object) -> object:
         class RaiseOnEnter:
             def __enter__(self) -> None:
-                raise OSError("cannot open")
+                error_message = "cannot open"
+                raise OSError(error_message)
 
             def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
                 pass

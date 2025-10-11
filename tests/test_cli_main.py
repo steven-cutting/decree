@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import importlib
+
 import click
 import pytest
 
@@ -27,6 +29,7 @@ def test_main_exception_handling(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
     def fake_app(*, standalone_mode: bool) -> None:
+        _ = standalone_mode
         raise exc
 
     monkeypatch.setattr(cli, "app", fake_app)
@@ -42,7 +45,5 @@ def test_main_exception_handling(
 
 
 def test_main_module_importable() -> None:
-    import importlib
-
     module = importlib.import_module("decree.__main__")
     assert module.main is cli.main

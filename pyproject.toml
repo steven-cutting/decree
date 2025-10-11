@@ -49,8 +49,20 @@ line-length = 100
 target-version = "py311"
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "UP", "B", "SIM", "PERF", "RUF", "ANN"]
-ignore = ["ANN101", "ANN102"]  # self and cls annotations are redundant
+select = ["ALL"]  # enable all stable rule families
+ignore = ["COM812"]  # avoid formatter conflicts with ruff-format
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = [
+    "D100",  # tests do not require module-level docstrings
+    "D101",  # tests do not require class docstrings
+    "D102",  # tests do not require method docstrings
+    "D103",  # tests do not require function docstrings
+    "S101",  # pytest assertions rely on bare assert statements
+]
+"tests/test_cli_success_paths.py" = [
+    "SLF001",  # tests intentionally exercise a private helper for error handling
+]
 
 [tool.mypy]
 python_version = "3.11"

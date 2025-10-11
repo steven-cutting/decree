@@ -21,7 +21,9 @@ def _init_repo(cli_runner: CliRunner, adr_dir: Path) -> None:
 
 
 def test_cli_new_defaults_to_today(
-    tmp_path: Path, cli_runner: CliRunner, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path,
+    cli_runner: CliRunner,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     adr_dir = tmp_path / "adr"
     _init_repo(cli_runner, adr_dir)
@@ -69,7 +71,9 @@ def test_cli_new_accepts_date_option(tmp_path: Path, cli_runner: CliRunner) -> N
 
 
 def test_cli_new_prefers_env_over_today(
-    tmp_path: Path, cli_runner: CliRunner, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path,
+    cli_runner: CliRunner,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     adr_dir = tmp_path / "adr"
     _init_repo(cli_runner, adr_dir)
@@ -104,6 +108,7 @@ def test_cli_new_rejects_invalid_date(tmp_path: Path, cli_runner: CliRunner) -> 
             invalid_date,
         ],
     )
-    assert result.exit_code == 2
+    expected_exit_code = 2
+    assert result.exit_code == expected_exit_code
     expected_message = f"Invalid date format: {invalid_date}"
     assert expected_message in result.output

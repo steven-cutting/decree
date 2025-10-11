@@ -40,7 +40,14 @@ def run_cli(
 ) -> subprocess.CompletedProcess[str]:
     command = [*CLI, *args]
     final_env = _build_env(env or {}, python_paths)
-    return subprocess.run(command, cwd=cwd, capture_output=True, text=True, env=final_env)
+    return subprocess.run(  # noqa: S603 - command is built from trusted arguments
+        command,
+        check=False,
+        cwd=cwd,
+        capture_output=True,
+        text=True,
+        env=final_env,
+    )
 
 
 @pytest.mark.parametrize(

@@ -46,9 +46,8 @@ class ExitCode(IntEnum):
 
 def exit_with(code: ExitCode, msg: str | None = None) -> NoReturn:
     """Exit the interpreter with ``code`` optionally emitting ``msg`` to stderr."""
-
     if msg:
-        print(msg, file=sys.stderr)
+        sys.stderr.write(f"{msg}\n")
     raise SystemExit(int(code))
 
 
