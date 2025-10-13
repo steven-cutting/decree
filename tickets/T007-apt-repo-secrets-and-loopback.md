@@ -1,6 +1,6 @@
 # T007 — APT repo: secrets + loopback signing
 
-**user story & rationale**  
+**user story & rationale**
 As a Debian/Ubuntu user, I want a signed apt repo that installs `decree`.
 
 **scope (in)**

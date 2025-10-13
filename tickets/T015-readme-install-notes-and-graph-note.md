@@ -1,6 +1,6 @@
 # T015 — README: install notes (brew/apt) and graph note
 
-**user story & rationale**  
+**user story & rationale**
 As a new user, I want clear install options and to understand current graph
 limitation.
 

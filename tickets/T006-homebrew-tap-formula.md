@@ -1,6 +1,6 @@
 # T006 — Homebrew tap & formula sha
 
-**user story & rationale**  
+**user story & rationale**
 As a macOS user, I want to install via Homebrew.
 
 **scope (in)**

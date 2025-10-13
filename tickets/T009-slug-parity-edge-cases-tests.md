@@ -1,6 +1,6 @@
 # T009 — Slug parity edge cases tests
 
-**user story & rationale**  
+**user story & rationale**
 As a user, I expect stable slug rules across odd inputs.
 
 **scope (in)**

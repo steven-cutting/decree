@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
-DEB=$(ls build/apt/*.deb | head -n1)
+DEB=$(find build/apt -maxdepth 1 -type f -name '*.deb' -print -quit)
+if [[ -z "$DEB" ]]; then
+  echo "No .deb package found in build/apt" >&2
+  exit 1
+fi
 REPO_DIR=build/repo
 DIST=stable
-COMP=main
 
 sudo apt-get update && sudo apt-get install -y reprepro gnupg
 mkdir -p "$REPO_DIR/conf"

@@ -1,6 +1,6 @@
 # T012 — upgrade-repository: idempotent test
 
-**user story & rationale**  
+**user story & rationale**
 As a maintainer, I want `upgrade-repository` to be safe to re-run.
 
 **scope (in)**
