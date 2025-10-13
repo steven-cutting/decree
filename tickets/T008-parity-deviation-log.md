@@ -1,6 +1,6 @@
 # T008 — Add parity deviation log
 
-**user story & rationale**  
+**user story & rationale**
 As a migrator from `adr-tools`, I need a clear list of intentional
 differences.
 

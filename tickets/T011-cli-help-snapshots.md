@@ -1,6 +1,6 @@
 # T011 — Snapshot tests for CLI --help
 
-**user story & rationale**  
+**user story & rationale**
 As a maintainer, I want to catch accidental UX changes in help text.
 
 **scope (in)**

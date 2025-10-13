@@ -78,7 +78,7 @@ ADR files: `NNNN-slug.md` where NNNN is zero-padded number and slug is from
 ## Key Files to Understand
 
 - **`doc/adr/`**: Live ADR documents showing the actual format and conventions
-- **`src/decree/core.py`**: Core business logic and file operations  
+- **`src/decree/core.py`**: Core business logic and file operations
 - **`tests/`**: Real filesystem testing patterns using pytest `tmp_path`
 - **`noxfile.py`**: Development workflow automation
 - **Third-party code**: Goes in `third_party/` with CC-BY-4.0 licensing

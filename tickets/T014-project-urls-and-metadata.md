@@ -1,6 +1,6 @@
 # T014 — Add project.urls and metadata polish
 
-**user story & rationale**  
+**user story & rationale**
 As a user, I want package metadata to link to the repo, issues, and homepage.
 
 **scope (in)**

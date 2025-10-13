@@ -1,6 +1,6 @@
 # T013 — Pre-commit reliability for markdown/yaml lint
 
-**user story & rationale**  
+**user story & rationale**
 As a contributor, I want pre-commit to run consistently without Node
 bootstrap issues.
 
